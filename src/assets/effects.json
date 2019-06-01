@@ -19,6 +19,64 @@
         ]
     },
     {
+        "id": "cut",
+        "name": "Cut",
+        "description": "Cuts beats in half.",
+        "params": [
+            {
+                "id": "period",
+                "name": "Every",
+                "default": 2,
+                "minimum": 1
+            }
+        ]
+    },
+    {
+        "id": "remove",
+        "name": "Remove",
+        "description": "Removes beats entirely.",
+        "params": [
+            {
+                "id": "period",
+                "name": "Every",
+                "default": 2,
+                "minimum": 1
+            }
+        ]
+    },
+    {
+        "id": "repeat",
+        "name": "Repeat N times",
+        "description": "Removes beats entirely.",
+        "params": [
+            {
+                "id": "period",
+                "name": "Every",
+                "default": 2,
+                "minimum": 1
+            },
+            {
+                "id": "times",
+                "name": "N",
+                "default": 2,
+                "minimum": 1
+            }
+        ]
+    },
+    {
+        "id": "silence",
+        "name": "Silence",
+        "description": "Silences beats, but retains their length.",
+        "params": [
+            {
+                "id": "silence",
+                "name": "Every",
+                "default": 2,
+                "minimum": 1
+            }
+        ]
+    },
+    {
         "id": "randomize",
         "name": "Randomize",
         "description": "Totally randomizes all beats. It's pretty terrible.",
