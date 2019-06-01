@@ -1,0 +1,27 @@
+[
+    {
+        "id": "swap",
+        "name": "Swap",
+        "description": "Swaps two beats throughout the entire song.",
+        "params": [
+            {
+                "id": "x_period",
+                "name": "Every",
+                "default": 2,
+                "minimum": 1
+            },
+            {
+                "id": "y_period",
+                "name": "With",
+                "default": 4,
+                "minimum": 1
+            }
+        ]
+    },
+    {
+        "id": "randomize",
+        "name": "Randomize",
+        "description": "Totally randomizes all beats. It's pretty terrible.",
+        "params": []
+    }
+]

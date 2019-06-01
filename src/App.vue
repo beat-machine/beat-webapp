@@ -1,28 +1,65 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <EffectSelector
+      v-for="(effect, i) in effects"
+      v-bind:key="i"
+      v-bind:effects="allEffects()"
+      ref="effect"
+    ></EffectSelector>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import EffectSelector from "./components/EffectSelector.vue";
 
 export default {
-  name: 'app',
+  name: "app",
+  data() {
+    return {
+      effects: [{}, {}]
+    };
+  },
   components: {
-    HelloWorld
+    EffectSelector
+  },
+  computed: {
+    serializedEffects() {
+      return this.$refs.effect.map(e => e.serialized);
+    }
+  },
+  methods: {
+    allEffects() {
+      return [
+        {
+          id: "swap",
+          name: "Swap",
+          description: "Swaps two beats throughout the entire song.",
+          params: [
+            {
+              id: "x_period",
+              name: "Every",
+              value: 2,
+              minimum: 1
+            },
+            {
+              id: "y_period",
+              name: "With",
+              value: 4,
+              minimum: 1
+            }
+          ]
+        },
+        {
+          id: "randomize",
+          name: "Randomize",
+          description: "Totally randomizes all beats. It's pretty terrible.",
+          params: []
+        }
+      ];
+    }
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
