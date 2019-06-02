@@ -1,18 +1,31 @@
 [
     {
+        "id": "remove",
+        "name": "Remove",
+        "description": "Removes beats entirely.",
+        "params": [
+            {
+                "id": "period",
+                "name": "Period",
+                "default": 2,
+                "minimum": 1
+            }
+        ]
+    },
+    {
         "id": "swap",
         "name": "Swap",
         "description": "Swaps two beats throughout the entire song.",
         "params": [
             {
                 "id": "x_period",
-                "name": "Every",
+                "name": "First beat",
                 "default": 2,
                 "minimum": 1
             },
             {
                 "id": "y_period",
-                "name": "With",
+                "name": "Second beat",
                 "default": 4,
                 "minimum": 1
             }
@@ -25,20 +38,7 @@
         "params": [
             {
                 "id": "period",
-                "name": "Every",
-                "default": 2,
-                "minimum": 1
-            }
-        ]
-    },
-    {
-        "id": "remove",
-        "name": "Remove",
-        "description": "Removes beats entirely.",
-        "params": [
-            {
-                "id": "period",
-                "name": "Every",
+                "name": "Period",
                 "default": 2,
                 "minimum": 1
             }
@@ -46,18 +46,18 @@
     },
     {
         "id": "repeat",
-        "name": "Repeat N times",
-        "description": "Removes beats entirely.",
+        "name": "Repeat",
+        "description": "Repeats beats a certain number of times.",
         "params": [
             {
                 "id": "period",
-                "name": "Every",
+                "name": "Period",
                 "default": 2,
                 "minimum": 1
             },
             {
                 "id": "times",
-                "name": "N",
+                "name": "Times to repeat",
                 "default": 2,
                 "minimum": 1
             }
@@ -70,7 +70,7 @@
         "params": [
             {
                 "id": "silence",
-                "name": "Every",
+                "name": "Period",
                 "default": 2,
                 "minimum": 1
             }
