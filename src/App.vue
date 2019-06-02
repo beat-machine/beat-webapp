@@ -87,7 +87,7 @@ import EffectSelector from "./components/EffectSelector.vue";
 import { setInterval, clearInterval } from "timers";
 import effectDefinitions from "./assets/effects.json";
 
-const BASE_URI = "http://beat-api.herokuapp.com";
+const BASE_URI = "https://beat-api.herokuapp.com";
 
 export default {
   name: "app",
