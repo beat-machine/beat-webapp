@@ -11,7 +11,7 @@
             >Upload a song, specify its BPM, choose effects, and then press the submit button to start processing. For best results, choose a song with no buildup or leading silence.</p>
             <b-field label="Song">
               <b-field class="file">
-                <b-upload v-model="song" accept="audio/mpeg">
+                <b-upload v-model="song" accept=".mp3">
                   <a class="button is-primary">
                     <b-icon icon="upload"></b-icon>
                     <span>Select an MP3</span>
