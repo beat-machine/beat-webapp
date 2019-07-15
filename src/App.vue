@@ -5,39 +5,32 @@
       <div class="container">
         <div class="columns">
           <div class="column">
-            <h1 class="title">Upload</h1>
+            <h1 class="title">Effects</h1>
             <p
               class="content"
-            >Upload a song, specify its BPM, choose effects, and then press the submit button to start processing. For best results, choose a song with no buildup or leading silence.</p>
-            <b-field label="Song">
-              <b-field class="file">
-                <b-upload v-model="song" accept=".mp3">
-                  <a class="button is-primary">
-                    <b-icon icon="upload"></b-icon>
-                    <span>Select an MP3</span>
-                  </a>
-                </b-upload>
-                <span class="file-name" v-if="song">{{ song.name }}</span>
-              </b-field>
-            </b-field>
-            <b-field label="BPM" message="This can often be found online.">
-              <b-numberinput controls-position="compact" v-model.number="bpm"></b-numberinput>
-            </b-field>
-            <b-field>
-              <b-button
-                v-on:click="submitSong()"
-                type="is-success"
-                v-if="!processing && !uploading"
-              >Submit</b-button>
-              <b-button v-else type="is-loading is-success" disabled>Submit</b-button>
-            </b-field>
-            <h1 class="title">Result</h1>
-            <b-notification
-              type="is-danger"
-              v-bind:closable="false"
-              role="alert"
-              v-if="resultError"
-            >{{ resultError }}</b-notification>
+            >Select effects to add to the song. Period refers to how often the effect is applied (i.e. a period of 1 means every single beat while a period of 2 means every other one).</p>
+            <div class="box" v-for="(effect, i) in effects" v-bind:key="i">
+              <EffectSelector v-bind:effects="effectDefinitions" ref="effect"></EffectSelector>
+            </div>
+            <div class="buttons">
+              <button type="is-light is-fullwidth is-medium" v-on:click="effects.push({})">add</button>
+              <button
+                type="is-light is-fullwidth is-medium"
+                v-if="effects.length > 1"
+                v-on:click="effects.pop()"
+              >remove</button>
+            </div>
+          </div>
+          <div class="column">
+            <h1 class="title">Upload</h1>
+            <input type="file" v-on:change="updateFile" accept=".mp3" />
+            <span class="file-name" v-if="song">{{ song.name }}</span>
+            <button
+              v-on:click="submitSong()"
+              type="is-success"
+              v-if="!processing && !uploading"
+            >Submit</button>
+            <button v-else type="is-loading is-success" disabled>Submit</button>
             <template v-if="uploading">
               <small>Uploading audio</small>
               <progress class="progress is-dark" v-bind:max="100" v-bind:value="uploadPercentage"></progress>
@@ -50,29 +43,8 @@
                 v-bind:max="submittedEffectCount"
               ></progress>
             </template>
-            <audio v-bind:src="resultUri" v-if="resultUri" controls type="audio/mpeg" autostart="0"></audio>
-            <p v-else>The latest result will appear here.</p>
-          </div>
-          <div class="column">
-            <h1 class="title">Effects</h1>
-            <p
-              class="content"
-            >Select effects to add to the song. Period refers to how often the effect is applied (i.e. a period of 1 means every single beat while a period of 2 means every other one).</p>
-            <div class="box" v-for="(effect, i) in effects" v-bind:key="i">
-              <EffectSelector v-bind:effects="effectDefinitions" ref="effect"></EffectSelector>
-            </div>
-            <div class="buttons">
-              <b-button type="is-light is-fullwidth is-medium" v-on:click="effects.push({})">
-                <b-icon icon="plus"></b-icon>
-              </b-button>
-              <b-button
-                type="is-light is-fullwidth is-medium"
-                v-if="effects.length > 1"
-                v-on:click="effects.pop()"
-              >
-                <b-icon icon="minus"></b-icon>
-              </b-button>
-            </div>
+            <audio v-bind:src="audioUrl" v-if="audioUrl" controls type="audio/mpeg" autostart="0"></audio>
+            <p v-else>Submit a song to see the result!</p>
           </div>
         </div>
       </div>
@@ -87,24 +59,21 @@ import EffectSelector from "./components/EffectSelector.vue";
 import { setInterval, clearInterval } from "timers";
 import effectDefinitions from "./assets/effects.json";
 
-const BASE_URI = "https://beat-api.herokuapp.com";
+// const BASE_URI = "https://beatfunc-zz5hrgpina-uc.a.run.app";
+const BASE_URI = "http://127.0.0.1:8000/";
 
 export default {
   name: "app",
   data() {
     return {
       song: null,
-      bpm: 100,
       effects: [{}],
       effectDefinitions: effectDefinitions,
       pollToken: null,
       uploading: false,
       uploadPercentage: 0,
       processing: false,
-      resultUri: null,
-      resultError: null,
-      progress: 0,
-      submittedEffectCount: 0
+      audioUrl: null
     };
   },
   components: {
@@ -122,13 +91,7 @@ export default {
       let data = new FormData();
 
       data.append("song", this.song);
-      data.append(
-        "data",
-        JSON.stringify({
-          bpm: this.bpm,
-          effects: this.serializedEffects
-        })
-      );
+      data.append("effects", JSON.stringify(this.serializedEffects));
 
       return data;
     },
@@ -137,6 +100,9 @@ export default {
     }
   },
   methods: {
+    updateFile(e) {
+      this.song = e.target.files[0];
+    },
     async submitSong() {
       if (this.processing) {
         return;
@@ -148,22 +114,22 @@ export default {
       try {
         this.uploading = true;
 
-        let response = await axios.post(
-          BASE_URI + "/api/v0/submit",
-          this.requestData,
-          {
+        axios
+          .post(BASE_URI, this.requestData, {
             headers: {
               "Content-Type": "multipart/form-data"
             },
+            responseType: "blob",
             onUploadProgress: function(event) {
               this.uploadPercentage = parseInt(
                 Math.round((event.loaded * 100) / event.total)
               );
             }.bind(this)
-          }
-        );
-
-        this.startPolling(response.data.status.href);
+          })
+          .then(r => {
+            let blob = new Blob([r.data], { type: "audio/mpeg" });
+            this.audioUrl = URL.createObjectURL(blob);
+          });
       } catch (e) {
         this.resultError = e;
         this.$toast.open("An error occurred.");
