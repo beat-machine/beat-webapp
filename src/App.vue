@@ -120,12 +120,13 @@ export default {
     },
     invalidSwapEffectExists() {
       for (let e of this.$refs.effect) {
-        try {
-          if (e.currentParams["x_period"] === e.currentParams["y_period"]) {
-            return true;
-          }
-        } catch {
-          // EAFP! This will be replaced with proper validation eventually.
+        let params = e.currentParams;
+        if (
+          "x_period" in params &&
+          "y_period" in params &&
+          params["x_period"] === params["y_period"]
+        ) {
+          return true;
         }
       }
 
