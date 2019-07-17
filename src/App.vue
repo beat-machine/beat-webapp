@@ -67,8 +67,7 @@ import Banner from "./components/Banner.vue";
 import EffectSelector from "./components/EffectSelector.vue";
 import effectDefinitions from "./assets/effects.json";
 
-// const BASE_URI = "http://127.0.0.1:8000/";
-const BASE_URI = "https://beatfunc-zz5hrgpina-uc.a.run.app";
+const BASE_URL = "https://beatfunc-zz5hrgpina-uc.a.run.app";
 
 export default {
   name: "app",
@@ -77,7 +76,6 @@ export default {
       song: null,
       effects: [{}],
       effectDefinitions: effectDefinitions,
-      pollToken: null,
       uploading: false,
       processing: false,
       error: null,
@@ -120,18 +118,34 @@ export default {
     updateFile(e) {
       this.song = e.target.files[0];
     },
+    invalidSwapEffectExists() {
+      for (let e of this.$refs.effect) {
+        try {
+          if (e.currentParams["x_period"] === e.currentParams["y_period"]) {
+            return true;
+          }
+        } catch {
+          // EAFP! This will be replaced with proper validation eventually.
+        }
+      }
+
+      return false;
+    },
     async submitSong() {
       if (this.processing) {
         return;
       }
 
-      this.resultError = null;
-      this.submittedEffectCount = this.effectCount;
+      if (this.invalidSwapEffectExists()) {
+        this.error =
+          "Can't swap a beat with itself. Double-check any swap effects.";
+        return;
+      }
 
       try {
         this.uploading = true;
 
-        let result = await axios.post(BASE_URI, this.requestData, {
+        let result = await axios.post(BASE_URL, this.requestData, {
           headers: {
             "Content-Type": "multipart/form-data"
           },
@@ -203,6 +217,10 @@ body {
 h1 {
   font-family: "Space Mono", monospace;
   color: $primary-text;
+}
+
+option {
+  color: #000;
 }
 
 select,
