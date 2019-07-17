@@ -88,6 +88,7 @@ label {
 span {
   display: block;
   margin-top: 16px;
+
   @media (min-width: 1400px) {
     display: inline-block;
     margin-top: 0;

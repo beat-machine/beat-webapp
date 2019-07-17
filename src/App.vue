@@ -67,8 +67,8 @@ import Banner from "./components/Banner.vue";
 import EffectSelector from "./components/EffectSelector.vue";
 import effectDefinitions from "./assets/effects.json";
 
-// const BASE_URI = "https://beatfunc-zz5hrgpina-uc.a.run.app";
-const BASE_URI = "http://127.0.0.1:8000/";
+// const BASE_URI = "http://127.0.0.1:8000/";
+const BASE_URI = "https://beatfunc-zz5hrgpina-uc.a.run.app";
 
 export default {
   name: "app",
