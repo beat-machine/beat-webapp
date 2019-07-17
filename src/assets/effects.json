@@ -6,9 +6,9 @@
         "params": [
             {
                 "id": "period",
-                "name": "Period",
+                "name": "Every",
                 "default": 2,
-                "minimum": 1
+                "minimum": 2
             }
         ]
     },
@@ -38,7 +38,7 @@
         "params": [
             {
                 "id": "period",
-                "name": "Period",
+                "name": "Every",
                 "default": 2,
                 "minimum": 1
             }
@@ -51,7 +51,7 @@
         "params": [
             {
                 "id": "period",
-                "name": "Period",
+                "name": "Every",
                 "default": 2,
                 "minimum": 1
             },
@@ -79,7 +79,7 @@
     {
         "id": "randomize",
         "name": "Randomize",
-        "description": "Totally randomizes all beats. It's pretty terrible.",
+        "description": "Totally randomizes all beats. It's terrible. Don't use this. You don't want it.",
         "params": []
     }
 ]
