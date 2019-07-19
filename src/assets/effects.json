@@ -77,6 +77,19 @@
         ]
     },
     {
+        "id": "reverse",
+        "name": "Reverse",
+        "description": "Reverses beats.",
+        "params": [
+            {
+                "id": "period",
+                "name": "Every",
+                "default": 2,
+                "minimum": 1
+            }
+        ]
+    },
+    {
         "id": "randomize",
         "name": "Randomize",
         "description": "Totally randomizes all beats. It's terrible. Don't use this. You don't want it.",
