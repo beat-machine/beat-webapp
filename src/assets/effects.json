@@ -69,10 +69,10 @@
         "description": "Silences beats, but retains their length.",
         "params": [
             {
-                "id": "silence",
-                "name": "Period",
+                "id": "period",
+                "name": "Every",
                 "default": 2,
-                "minimum": 1
+                "minimum": 2
             }
         ]
     },
