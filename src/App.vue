@@ -40,7 +40,10 @@
           <h2 class="color-cycle">Processing...</h2>
           <p>This will take a moment.</p>
         </template>
-        <h2 v-if="error && !uploading && !processing">An error occurred: {{ error }}</h2>
+        <template v-if="error && !uploading && !processing">
+          <h2>An error occurred: {{ error }}</h2>
+          <p>Frequent network issues are being investigated. In the meantime, try again in a minute. The server might be under heavy load.</p>
+        </template>
       </div>
       <div class="player" v-if="audioUrl">
         <audio v-bind:src="audioUrl" controls type="audio/mpeg" autostart="0"></audio>
@@ -151,18 +154,12 @@ export default {
             "Content-Type": "multipart/form-data"
           },
           responseType: "blob",
+          timeout: 480 * 1000,
           onUploadProgress: function(event) {
             this.uploading = event.loaded < event.total;
             this.processing = !this.uploading;
           }.bind(this)
         });
-
-        if (result.status >= 500) {
-          this.error =
-            "The server may be under heavy load. Try again in a few minutes.";
-          this.audioUrl = null;
-          return;
-        }
 
         let blob = new Blob([result.data], { type: "audio/mpeg" });
         this.audioUrl = URL.createObjectURL(blob);
@@ -309,7 +306,6 @@ audio {
   text-align: center;
   margin-top: 32px;
   margin-bottom: 32px;
-  line-height: 80%;
 }
 
 .color-cycle {
