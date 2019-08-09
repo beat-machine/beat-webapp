@@ -33,7 +33,7 @@
 
     <section class="submit">
       <h1>Result</h1>
-      <p>Press submit to render the result. This tends to take about as long as the song.</p>
+      <p>Press submit to render the result. This will probably take a while.</p>
       <div class="progress-info" v-if="uploading || processing || error">
         <h2 v-if="uploading">Uploading...</h2>
         <template v-if="processing">
@@ -41,7 +41,7 @@
           <p>This will take a moment.</p>
         </template>
         <template v-if="error && !uploading && !processing">
-          <h2>An error occurred: {{ error }}</h2>
+          <h2>An error occurred ({{ error }}).</h2>
           <p>Frequent network issues are being investigated. In the meantime, try again in a minute. The server might be under heavy load.</p>
         </template>
       </div>
@@ -57,10 +57,17 @@
         <input value="Submit" type="button" v-on:click="submitSong()" :disabled="!canSubmit" />
       </div>
     </section>
-    <p class="site-info">
-      Check out the source for this page
-      <a href="https://github.com/dhsavell/beat-webapp">here</a>.
-    </p>
+    <div class="site-info">
+      <p>Last update: {{ commitInfo }} ({{ commitHash }})</p>
+      <p>
+        Created by
+        <a href="https://twitter.com/branchpanic">@branchpanic</a>.
+        Check out the source for this page
+        <a
+          href="https://github.com/dhsavell/beat-webapp"
+        >here</a>.
+      </p>
+    </div>
   </div>
 </template>
 
@@ -82,7 +89,14 @@ export default {
       uploading: false,
       processing: false,
       error: null,
-      audioUrl: null
+      audioUrl: null,
+
+      // COMMIT_INFO and COMMIT_HASH is defined through a Webpack plugin.
+      // eslint-disable-next-line
+      commitInfo: COMMIT_INFO,
+
+      // eslint-disable-next-line
+      commitHash: COMMIT_HASH
     };
   },
   components: {
@@ -258,6 +272,7 @@ input[type="button"]:disabled {
 
 #app {
   padding-top: 40px;
+  padding-bottom: 40px;
   width: 80%;
 
   @media (min-width: 1400px) {
