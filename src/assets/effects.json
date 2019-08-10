@@ -28,6 +28,12 @@
                 "name": "Second beat",
                 "default": 4,
                 "minimum": 1
+            },
+            {
+                "id": "group_size",
+                "name": "Beats per measure",
+                "default": 4,
+                "minimum": 2
             }
         ]
     },
