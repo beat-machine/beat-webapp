@@ -4,17 +4,64 @@
 
     <section class="upload">
       <h1>Upload</h1>
-      <p>Choose an MP3 to upload.</p>
-      <input type="file" v-on:change="updateFile" accept=".mp3" />
+      <p>Choose and configure a song.</p>
+      <descriptive-input
+        fieldId="suggested-bpm"
+        label="MP3 File"
+        help="Shorter songs process faster!"
+      >
+        <input type="file" v-on:change="updateFile" accept=".mp3" />
+      </descriptive-input>
+      <collapsible-box header="Optional Beat Detection Settings" startCollapsed>
+        <descriptive-input
+          fieldId="use-custom-bpm"
+          label="Custom Tempo"
+          help="Check this to tell the AI what tempo to use."
+          inlineField
+        >
+          <styled-checkbox v-model="useCustomBpm" id="use-custom-bpm" type="checkbox" />
+        </descriptive-input>
+
+        <descriptive-input
+          fieldId="suggested-bpm"
+          label="BPM Estimate"
+          help="Average song BPM. Set this if results are twice as fast or slow."
+          :disabled="!useCustomBpm"
+        >
+          <input
+            v-model.number="suggestedBpm"
+            id="suggested-bpm"
+            type="number"
+            min="30"
+            max="300"
+            :disabled="!useCustomBpm"
+          />
+        </descriptive-input>
+
+        <descriptive-input
+          fieldId="suggested-bpm"
+          label="BPM Drift"
+          help="Max deviation from the given BPM."
+          :disabled="!useCustomBpm"
+        >
+          <input
+            v-model.number="drift"
+            id="max-drift"
+            type="number"
+            min="5"
+            max="25"
+            :disabled="!useCustomBpm"
+          />
+        </descriptive-input>
+      </collapsible-box>
     </section>
 
     <section class="effects">
       <h1>Effects</h1>
       <p>Select up to 5 effects to add.</p>
-      <div class="effect-box" v-for="(effect, i) in effects" v-bind:key="i">
-        <div class="effect-header">EFFECT #{{ i + 1 }}</div>
-        <EffectSelector v-bind:effects="effectDefinitions" ref="effect"></EffectSelector>
-      </div>
+      <collapsible-box v-for="(effect, i) in effects" v-bind:key="i" :header="'Effect #' + (i + 1)">
+        <effect-selector v-bind:effects="effectDefinitions" ref="effect"></effect-selector>
+      </collapsible-box>
       <div class="buttons">
         <input
           type="button"
@@ -57,8 +104,12 @@
         <input value="Submit" type="button" v-on:click="submitSong()" :disabled="!canSubmit" />
       </div>
     </section>
+
     <div class="site-info">
-      <p>Last update: {{ commitInfo }} ({{ commitHash }})</p>
+      <p>
+        Last update: {{ commitInfo }} ({{ commitHash }})
+        on {{ commitTimestamp.getFullYear() }}-{{ ('0' + commitTimestamp.getMonth()).slice(-2) }}-{{ ('0' + commitTimestamp.getDate()).slice(-2) }}
+      </p>
       <p>
         Created by
         <a href="https://twitter.com/branchpanic">@branchpanic</a>.
@@ -75,33 +126,51 @@
 import axios from "axios";
 import Banner from "./components/Banner.vue";
 import EffectSelector from "./components/EffectSelector.vue";
+import DescriptiveInput from "./components/DescriptiveInput.vue";
+import CollapsibleBox from "./components/CollapsibleBox.vue";
+import StyledCheckbox from "./components/StyledCheckbox.vue";
 import effectDefinitions from "./assets/effects.json";
 
-const BASE_URL = "https://beatfunc-zz5hrgpina-uc.a.run.app";
+const BASE_URL = "http://localhost:8000";
 
 export default {
   name: "app",
   data() {
     return {
+      // Configuration
+      effectDefinitions: effectDefinitions,
+
+      // State management
       song: null,
       effects: [{}],
-      effectDefinitions: effectDefinitions,
       uploading: false,
       processing: false,
       error: null,
       audioUrl: null,
 
-      // COMMIT_INFO and COMMIT_HASH is defined through a Webpack plugin.
+      // Advanced settings
+      useCustomBpm: false,
+      suggestedBpm: 100,
+      drift: 15,
+
+      // Webpack injected constants (all remaining properties)
+
       // eslint-disable-next-line
       commitInfo: COMMIT_INFO,
 
       // eslint-disable-next-line
-      commitHash: COMMIT_HASH
+      commitHash: COMMIT_HASH,
+
+      // eslint-disable-next-line
+      commitTimestamp: new Date(parseInt(COMMIT_TIMESTAMP) * 1000)
     };
   },
   components: {
     Banner,
-    EffectSelector
+    EffectSelector,
+    DescriptiveInput,
+    CollapsibleBox,
+    StyledCheckbox
   },
   computed: {
     effectCount() {
@@ -114,7 +183,20 @@ export default {
       let data = new FormData();
 
       data.append("song", this.song);
-      data.append("effects", JSON.stringify(this.serializedEffects));
+
+      let effectPayload = {
+        settings: {},
+        effects: this.serializedEffects
+      };
+
+      if (this.useCustomBpm) {
+        effectPayload.settings = {
+          suggested_bpm: this.suggestedBpm,
+          drift: this.drift
+        };
+      }
+
+      data.append("effects", JSON.stringify(effectPayload));
 
       return data;
     },
@@ -190,17 +272,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import url("https://fonts.googleapis.com/css?family=Karla|Space+Mono&display=swap");
-
-$background: #111;
-$disabled-text: #888;
-$text: #aaa;
-$primary-text: #eee;
-
-$accent-1: #faeb2c;
-$accent-2: #f52789;
-$accent-3: #e900ff;
-$accent-4: #1685f8;
+@import "./scss/global.scss";
 
 @keyframes colors {
   0% {
@@ -226,33 +298,28 @@ body {
   color: $text;
 }
 
+.container {
+  padding: 16px;
+}
+
 h1 {
   font-family: "Space Mono", monospace;
   color: $primary-text;
 }
 
-option {
-  color: #000;
-}
-
-select,
-input[type="number"] {
-  font-family: "Space Mono", monospace;
-  font-weight: bold;
-  background-color: inherit;
-  color: $primary-text;
-  padding: 8px;
-  border: 2px solid $text;
-}
-
 input[type="button"] {
   font-family: "Space Mono", monospace;
   font-weight: bold;
-  background-color: $text;
   border: none;
   padding: 8px;
-  margin-left: 8px;
+  margin-left: 16px;
+  background-color: $text;
   color: $background;
+  transition: background-color 0.1s $fast-ease;
+}
+
+input[type="button"]:hover {
+  background-color: $accent-1;
 }
 
 a {
@@ -283,11 +350,6 @@ input[type="button"]:disabled {
   margin-right: auto;
 }
 
-.effect-box {
-  border: 2px solid $text;
-  margin-bottom: 16px;
-}
-
 section {
   border: 2px solid $text;
   padding: 20px;
@@ -303,13 +365,6 @@ section h1 {
 
 .buttons {
   text-align: right;
-}
-
-.effect-header {
-  background-color: $text;
-  color: $background;
-  font-family: "Space Mono", monospace;
-  padding: 4px;
 }
 
 audio {
