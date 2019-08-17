@@ -106,7 +106,10 @@
     </section>
 
     <div class="site-info">
-      <p>Last update: {{ commitInfo }} ({{ commitHash }})</p>
+      <p>
+        Last update: {{ commitInfo }} ({{ commitHash }})
+        on {{ commitTimestamp.getFullYear() }}-{{ ('0' + commitTimestamp.getMonth()).slice(-2) }}-{{ ('0' + commitTimestamp.getDate()).slice(-2) }}
+      </p>
       <p>
         Created by
         <a href="https://twitter.com/branchpanic">@branchpanic</a>.
@@ -150,12 +153,16 @@ export default {
       suggestedBpm: 100,
       drift: 15,
 
-      // COMMIT_INFO and COMMIT_HASH are defined through a Webpack plugin.
+      // Webpack injected constants (all remaining properties)
+
       // eslint-disable-next-line
       commitInfo: COMMIT_INFO,
 
       // eslint-disable-next-line
-      commitHash: COMMIT_HASH
+      commitHash: COMMIT_HASH,
+
+      // eslint-disable-next-line
+      commitTimestamp: new Date(parseInt(COMMIT_TIMESTAMP) * 1000)
     };
   },
   components: {
