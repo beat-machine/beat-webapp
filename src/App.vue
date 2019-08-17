@@ -4,19 +4,19 @@
 
     <section class="upload">
       <h1>Upload</h1>
-      <p>Choose an MP3 to upload.</p>
+      <p>Choose and configure a song.</p>
       <descriptive-input
         fieldId="suggested-bpm"
         label="MP3 File"
-        help="Shorter songs process faster."
+        help="Shorter songs process faster!"
       >
         <input type="file" v-on:change="updateFile" accept=".mp3" />
       </descriptive-input>
-      <collapsible-box header="Beat Detection Settings" startCollapsed>
+      <collapsible-box header="Optional Beat Detection Settings" startCollapsed>
         <descriptive-input
           fieldId="use-custom-bpm"
-          label="Custom BPM"
-          help="Check this to tell the AI roughly what tempo to use."
+          label="Custom Tempo"
+          help="Check this to tell the AI what tempo to use."
           inlineField
         >
           <styled-checkbox v-model="useCustomBpm" id="use-custom-bpm" type="checkbox" />
@@ -29,7 +29,7 @@
           :disabled="!useCustomBpm"
         >
           <input
-            v-model="suggestedBpm"
+            v-model.number="suggestedBpm"
             id="suggested-bpm"
             type="number"
             min="30"
@@ -45,7 +45,7 @@
           :disabled="!useCustomBpm"
         >
           <input
-            v-model="drift"
+            v-model.number="drift"
             id="max-drift"
             type="number"
             min="5"
@@ -128,7 +128,7 @@ import CollapsibleBox from "./components/CollapsibleBox.vue";
 import StyledCheckbox from "./components/StyledCheckbox.vue";
 import effectDefinitions from "./assets/effects.json";
 
-const BASE_URL = "https://beatfunc-zz5hrgpina-uc.a.run.app";
+const BASE_URL = "http://localhost:8000";
 
 export default {
   name: "app",
@@ -176,7 +176,20 @@ export default {
       let data = new FormData();
 
       data.append("song", this.song);
-      data.append("effects", JSON.stringify(this.serializedEffects));
+
+      let effectPayload = {
+        settings: {},
+        effects: this.serializedEffects
+      };
+
+      if (this.useCustomBpm) {
+        effectPayload.settings = {
+          suggested_bpm: this.suggestedBpm,
+          drift: this.drift
+        };
+      }
+
+      data.append("effects", JSON.stringify(effectPayload));
 
       return data;
     },
@@ -290,11 +303,16 @@ h1 {
 input[type="button"] {
   font-family: "Space Mono", monospace;
   font-weight: bold;
-  background-color: $text;
   border: none;
   padding: 8px;
-  margin-left: 8px;
+  margin-left: 16px;
+  background-color: $text;
   color: $background;
+  transition: background-color 0.1s $fast-ease;
+}
+
+input[type="button"]:hover {
+  background-color: $accent-1;
 }
 
 a {

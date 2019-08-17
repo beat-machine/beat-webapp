@@ -41,6 +41,10 @@ input {
   margin-right: 20px;
 }
 
+input[type="number"] {
+  width: 200px;
+}
+
 .field {
   margin-bottom: 16px;
 }

@@ -9,3 +9,13 @@ $accent-1: #faeb2c;
 $accent-2: #f52789;
 $accent-3: #e900ff;
 $accent-4: #1685f8;
+
+$fast-ease: cubic-bezier(0.075, 0.82, 0.165, 1);
+
+@mixin highlightable {
+
+
+    :hover {
+        background-color: $accent-1;
+    }
+}

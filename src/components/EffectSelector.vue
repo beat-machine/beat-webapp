@@ -12,6 +12,7 @@
       :key="i"
       :fieldId="param.id"
       :label="param.name"
+      help="asdf"
     >
       <input
         type="number"
@@ -63,7 +64,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-@import "../scss/global.scss";
-</style>

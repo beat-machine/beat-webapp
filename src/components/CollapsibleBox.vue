@@ -30,6 +30,8 @@ export default {
 .effect-box {
   border: 2px solid $text;
   margin-bottom: 16px;
+
+  transition: border-color 0.2s $fast-ease;
 }
 
 .effect-box:nth-child(n + 2):last-child {
@@ -43,6 +45,8 @@ export default {
   padding: 4px;
   text-transform: uppercase;
   user-select: none;
+
+  transition: background-color 0.2s $fast-ease;
 }
 
 .effect-box:hover .effect-header {
