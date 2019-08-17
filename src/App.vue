@@ -5,31 +5,38 @@
     <section class="upload">
       <h1>Upload</h1>
       <p>Choose an MP3 to upload.</p>
-      <input type="file" v-on:change="updateFile" accept=".mp3" />
-      <div class="effect-box advanced-settings">
-        <number-property
-          name="suggested-bpm"
+      <descriptive-input
+        fieldId="suggested-bpm"
+        label="MP3 File"
+        help="Shorter songs process faster."
+      >
+        <input type="file" v-on:change="updateFile" accept=".mp3" />
+      </descriptive-input>
+      <collapsible-box header="Advanced Settings" collapsed>
+        <descriptive-input
+          fieldId="suggested-bpm"
           label="BPM Estimate"
           help="Approximate BPM to use. Set this if you get results that are twice as slow/fast than what you expected."
-          min="30"
-          max="300"
-        ></number-property>
+        >
+          <input v-model="suggestedBpm" id="suggested-bpm" type="number" min="30" max="300" />
+        </descriptive-input>
 
-        <div class="field">
-          <label for="max-drift">Max Drift:</label>
-          <input v-model="drift" id="max-drift" type="number" min="5" max="80" />
-          <span>Max deviation from the given BPM. You'll only need to change this if the song has a major tempo change. Setting this too high might undo the effect of suggesting a BPM.</span>
-        </div>
-      </div>
+        <descriptive-input
+          fieldId="suggested-bpm"
+          label="Max Drift"
+          help="Max deviation from the given BPM. You'll only need to change this if the song has a major tempo change. Setting this too high might undo the effect of suggesting a BPM."
+        >
+          <input v-model="drift" id="max-drift" type="number" min="5" max="25" />
+        </descriptive-input>
+      </collapsible-box>
     </section>
 
     <section class="effects">
       <h1>Effects</h1>
       <p>Select up to 5 effects to add.</p>
-      <div class="effect-box" v-for="(effect, i) in effects" v-bind:key="i">
-        <div class="effect-header">EFFECT #{{ i + 1 }}</div>
-        <EffectSelector v-bind:effects="effectDefinitions" ref="effect"></EffectSelector>
-      </div>
+      <collapsible-box v-for="(effect, i) in effects" v-bind:key="i" :header="'Effect #' + (i + 1)">
+        <effect-selector v-bind:effects="effectDefinitions" ref="effect"></effect-selector>
+      </collapsible-box>
       <div class="buttons">
         <input
           type="button"
@@ -72,6 +79,7 @@
         <input value="Submit" type="button" v-on:click="submitSong()" :disabled="!canSubmit" />
       </div>
     </section>
+
     <div class="site-info">
       <p>Last update: {{ commitInfo }} ({{ commitHash }})</p>
       <p>
@@ -90,6 +98,8 @@
 import axios from "axios";
 import Banner from "./components/Banner.vue";
 import EffectSelector from "./components/EffectSelector.vue";
+import DescriptiveInput from "./components/DescriptiveInput.vue";
+import CollapsibleBox from "./components/CollapsibleBox.vue";
 import effectDefinitions from "./assets/effects.json";
 
 const BASE_URL = "https://beatfunc-zz5hrgpina-uc.a.run.app";
@@ -123,7 +133,9 @@ export default {
   },
   components: {
     Banner,
-    EffectSelector
+    EffectSelector,
+    DescriptiveInput,
+    CollapsibleBox
   },
   computed: {
     effectCount() {
@@ -212,17 +224,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import url("https://fonts.googleapis.com/css?family=Karla|Space+Mono&display=swap");
-
-$background: #111;
-$disabled-text: #888;
-$text: #aaa;
-$primary-text: #eee;
-
-$accent-1: #faeb2c;
-$accent-2: #f52789;
-$accent-3: #e900ff;
-$accent-4: #1685f8;
+@import "./scss/global.scss";
 
 @keyframes colors {
   0% {
@@ -248,23 +250,13 @@ body {
   color: $text;
 }
 
+.container {
+  padding: 16px;
+}
+
 h1 {
   font-family: "Space Mono", monospace;
   color: $primary-text;
-}
-
-option {
-  color: #000;
-}
-
-select,
-input[type="number"] {
-  font-family: "Space Mono", monospace;
-  font-weight: bold;
-  background-color: inherit;
-  color: $primary-text;
-  padding: 8px;
-  border: 2px solid $text;
 }
 
 input[type="button"] {
@@ -305,11 +297,6 @@ input[type="button"]:disabled {
   margin-right: auto;
 }
 
-.effect-box {
-  border: 2px solid $text;
-  margin-bottom: 16px;
-}
-
 section {
   border: 2px solid $text;
   padding: 20px;
@@ -325,13 +312,6 @@ section h1 {
 
 .buttons {
   text-align: right;
-}
-
-.effect-header {
-  background-color: $text;
-  color: $background;
-  font-family: "Space Mono", monospace;
-  padding: 4px;
 }
 
 audio {

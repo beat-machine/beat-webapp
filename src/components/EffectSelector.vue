@@ -65,41 +65,5 @@ export default {
 </script>
 
 <style lang="scss">
-.effect-selector {
-  padding: 16px;
-}
-
-.field {
-  margin-bottom: 16px;
-}
-
-.param-label {
-  margin-right: 10px;
-}
-
-.field:last-child {
-  margin-bottom: 0;
-}
-
-label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 16pt;
-
-  @media (min-width: 1400px) {
-    display: inline-block;
-    width: 180px;
-  }
-}
-
-span {
-  display: block;
-  margin-top: 16px;
-
-  @media (min-width: 1400px) {
-    display: inline-block;
-    margin-top: 0;
-    margin-left: 16px;
-  }
-}
+@import "../scss/global.scss";
 </style>
