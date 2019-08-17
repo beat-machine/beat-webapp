@@ -6,6 +6,21 @@
       <h1>Upload</h1>
       <p>Choose an MP3 to upload.</p>
       <input type="file" v-on:change="updateFile" accept=".mp3" />
+      <div class="effect-box advanced-settings">
+        <number-property
+          name="suggested-bpm"
+          label="BPM Estimate"
+          help="Approximate BPM to use. Set this if you get results that are twice as slow/fast than what you expected."
+          min="30"
+          max="300"
+        ></number-property>
+
+        <div class="field">
+          <label for="max-drift">Max Drift:</label>
+          <input v-model="drift" id="max-drift" type="number" min="5" max="80" />
+          <span>Max deviation from the given BPM. You'll only need to change this if the song has a major tempo change. Setting this too high might undo the effect of suggesting a BPM.</span>
+        </div>
+      </div>
     </section>
 
     <section class="effects">
@@ -83,15 +98,22 @@ export default {
   name: "app",
   data() {
     return {
+      // Configuration
+      effectDefinitions: effectDefinitions,
+
+      // State management
       song: null,
       effects: [{}],
-      effectDefinitions: effectDefinitions,
       uploading: false,
       processing: false,
       error: null,
       audioUrl: null,
 
-      // COMMIT_INFO and COMMIT_HASH is defined through a Webpack plugin.
+      // Advanced settings
+      suggestedBpm: 100,
+      drift: 15,
+
+      // COMMIT_INFO and COMMIT_HASH are defined through a Webpack plugin.
       // eslint-disable-next-line
       commitInfo: COMMIT_INFO,
 
