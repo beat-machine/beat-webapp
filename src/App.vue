@@ -131,7 +131,7 @@ import CollapsibleBox from "./components/CollapsibleBox.vue";
 import StyledCheckbox from "./components/StyledCheckbox.vue";
 import effectDefinitions from "./assets/effects.json";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://beatfunc-zz5hrgpina-uc.a.run.app";
 
 export default {
   name: "app",
