@@ -12,7 +12,6 @@
       :key="i"
       :fieldId="param.id"
       :label="param.name"
-      help="asdf"
     >
       <input
         type="number"
