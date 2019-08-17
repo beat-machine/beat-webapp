@@ -12,21 +12,46 @@
       >
         <input type="file" v-on:change="updateFile" accept=".mp3" />
       </descriptive-input>
-      <collapsible-box header="Advanced Settings" collapsed>
+      <collapsible-box header="Beat Detection Settings" startCollapsed>
         <descriptive-input
-          fieldId="suggested-bpm"
-          label="BPM Estimate"
-          help="Approximate BPM to use. Set this if you get results that are twice as slow/fast than what you expected."
+          fieldId="use-custom-bpm"
+          label="Custom BPM"
+          help="Check this to tell the AI roughly what tempo to use."
+          inlineField
         >
-          <input v-model="suggestedBpm" id="suggested-bpm" type="number" min="30" max="300" />
+          <styled-checkbox v-model="useCustomBpm" id="use-custom-bpm" type="checkbox" />
         </descriptive-input>
 
         <descriptive-input
           fieldId="suggested-bpm"
-          label="Max Drift"
-          help="Max deviation from the given BPM. You'll only need to change this if the song has a major tempo change. Setting this too high might undo the effect of suggesting a BPM."
+          label="BPM Estimate"
+          help="Average song BPM. Set this if results are twice as fast or slow."
+          :disabled="!useCustomBpm"
         >
-          <input v-model="drift" id="max-drift" type="number" min="5" max="25" />
+          <input
+            v-model="suggestedBpm"
+            id="suggested-bpm"
+            type="number"
+            min="30"
+            max="300"
+            :disabled="!useCustomBpm"
+          />
+        </descriptive-input>
+
+        <descriptive-input
+          fieldId="suggested-bpm"
+          label="BPM Drift"
+          help="Max deviation from the given BPM."
+          :disabled="!useCustomBpm"
+        >
+          <input
+            v-model="drift"
+            id="max-drift"
+            type="number"
+            min="5"
+            max="25"
+            :disabled="!useCustomBpm"
+          />
         </descriptive-input>
       </collapsible-box>
     </section>
@@ -100,6 +125,7 @@ import Banner from "./components/Banner.vue";
 import EffectSelector from "./components/EffectSelector.vue";
 import DescriptiveInput from "./components/DescriptiveInput.vue";
 import CollapsibleBox from "./components/CollapsibleBox.vue";
+import StyledCheckbox from "./components/StyledCheckbox.vue";
 import effectDefinitions from "./assets/effects.json";
 
 const BASE_URL = "https://beatfunc-zz5hrgpina-uc.a.run.app";
@@ -120,6 +146,7 @@ export default {
       audioUrl: null,
 
       // Advanced settings
+      useCustomBpm: false,
       suggestedBpm: 100,
       drift: 15,
 
@@ -135,7 +162,8 @@ export default {
     Banner,
     EffectSelector,
     DescriptiveInput,
-    CollapsibleBox
+    CollapsibleBox,
+    StyledCheckbox
   },
   computed: {
     effectCount() {

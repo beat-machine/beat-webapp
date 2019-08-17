@@ -4,7 +4,7 @@
       class="effect-header"
       @click="collapsed = !collapsed"
     >{{ '[' + (collapsed ? '+' : '-') + '] ' }} {{ header }}</div>
-    <div class="container" v-if="!collapsed">
+    <div class="container" v-show="!collapsed">
       <slot></slot>
     </div>
   </div>
@@ -14,7 +14,12 @@
 export default {
   props: {
     header: String,
-    collapsed: Boolean
+    startCollapsed: Boolean
+  },
+  data() {
+    return {
+      collapsed: this.startCollapsed
+    };
   }
 };
 </script>
@@ -38,10 +43,6 @@ export default {
   padding: 4px;
   text-transform: uppercase;
   user-select: none;
-}
-
-.effect-box,
-.effect-header {
 }
 
 .effect-box:hover .effect-header {

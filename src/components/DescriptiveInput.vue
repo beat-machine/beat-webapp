@@ -1,6 +1,6 @@
 <template>
-  <div class="field">
-    <label :for="name">{{ label }}:</label>
+  <div class="field" :class="{'disabled': disabled}">
+    <label :for="fieldId" :class="{'stay-inline': inlineField}">{{ label }}:</label>
     <slot></slot>
     <span v-if="help">{{ help }}</span>
   </div>
@@ -11,7 +11,9 @@ export default {
   props: {
     fieldId: String,
     label: String,
-    help: String
+    help: String,
+    disabled: Boolean,
+    inlineField: Boolean
   }
 };
 </script>
@@ -31,10 +33,12 @@ input[type="number"] {
   color: $primary-text;
   padding: 8px;
   border: 2px solid $text;
+  vertical-align: middle;
 }
 
-.label {
-  margin-right: 10px;
+select,
+input {
+  margin-right: 20px;
 }
 
 .field {
@@ -47,24 +51,45 @@ input[type="number"] {
 
 label {
   display: block;
-  margin-bottom: 8px;
   font-size: 16pt;
+  margin-bottom: 8px;
   color: $primary-text;
 
   @media (min-width: 1400px) {
     display: inline-block;
+    margin-bottom: 0;
+    vertical-align: middle;
     width: 180px;
   }
 }
 
+label.stay-inline {
+  display: inline-block;
+  margin-right: 16px;
+
+  @media (min-width: 1400px) {
+    margin-right: 0;
+  }
+}
+
+.disabled label,
+.disabled input {
+  color: $disabled-text;
+  border-color: $disabled-text;
+}
+
+.disabled label {
+  text-decoration: line-through;
+}
+
 span {
   display: block;
-  padding-top: 16px;
+  margin-top: 8px;
 
   @media (min-width: 1400px) {
     display: inline-block;
-    margin-top: 0;
-    margin-left: 16px;
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
 }
 </style>
