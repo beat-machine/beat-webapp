@@ -2,7 +2,7 @@
   <div id="app">
     <Banner></Banner>
 
-    <section class="upload">
+    <section>
       <h1>Upload</h1>
       <p>Choose and configure a song.</p>
       <descriptive-input
@@ -56,7 +56,7 @@
       </collapsible-box>
     </section>
 
-    <section class="effects">
+    <section>
       <h1>Effects</h1>
       <p>Select up to 5 effects to add.</p>
       <collapsible-box v-for="(effect, i) in effects" v-bind:key="i" :header="'Effect #' + (i + 1)">
@@ -78,7 +78,7 @@
       </div>
     </section>
 
-    <section class="submit">
+    <section>
       <h1>Result</h1>
       <p>Press submit to render the result. This will probably take a while.</p>
       <div class="progress-info" v-if="uploading || processing || error">
@@ -103,6 +103,17 @@
         <span class="submit-hint">{{ submitMessage }}</span>
         <input value="Submit" type="button" v-on:click="submitSong()" :disabled="!canSubmit" />
       </div>
+    </section>
+
+    <section class="subtle">
+      <h1>Support</h1>
+      <p>
+        If you enjoy The Beat Machine and would like to fund future development (i.e. better servers -> less timeouts), please consider supporting me on
+        Patreon! One-time tips are welcomed and even encouraged over subscriptions.
+      </p>
+      <p>
+        Patrons get access to comprehensive behind-the-scenes status upgrades and prioritized feature requests.
+      </p>
     </section>
 
     <div class="site-info">
@@ -351,11 +362,16 @@ input[type="button"]:disabled {
 }
 
 section {
-  border: 2px solid $text;
+  border: 2px solid $frames;
   padding: 20px;
   margin-bottom: 48px;
   background-color: $background;
-  box-shadow: 8px 16px 0px 0px $text;
+  box-shadow: 8px 16px 0px 0px $frames;
+}
+
+section.subtle {
+  border: none;
+  box-shadow: none;
 }
 
 section h1 {
