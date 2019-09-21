@@ -1,104 +1,104 @@
 [
-    {
-        "id": "remove",
-        "name": "Remove",
-        "description": "Removes beats entirely.",
-        "params": [
-            {
-                "id": "period",
-                "name": "Every",
-                "default": 2,
-                "minimum": 2
-            }
-        ]
-    },
-    {
-        "id": "swap",
-        "name": "Swap",
-        "description": "Swaps two beats throughout the entire song.",
-        "params": [
-            {
-                "id": "x_period",
-                "name": "First beat",
-                "default": 2,
-                "minimum": 1
-            },
-            {
-                "id": "y_period",
-                "name": "Second beat",
-                "default": 4,
-                "minimum": 1
-            },
-            {
-                "id": "group_size",
-                "name": "Beats per measure",
-                "default": 4,
-                "minimum": 2
-            }
-        ]
-    },
-    {
-        "id": "cut",
-        "name": "Cut",
-        "description": "Cuts beats in half.",
-        "params": [
-            {
-                "id": "period",
-                "name": "Every",
-                "default": 2,
-                "minimum": 1
-            }
-        ]
-    },
-    {
-        "id": "repeat",
-        "name": "Repeat",
-        "description": "Repeats beats a certain number of times.",
-        "params": [
-            {
-                "id": "period",
-                "name": "Every",
-                "default": 2,
-                "minimum": 1
-            },
-            {
-                "id": "times",
-                "name": "Times to repeat",
-                "default": 2,
-                "minimum": 1
-            }
-        ]
-    },
-    {
-        "id": "silence",
-        "name": "Silence",
-        "description": "Silences beats, but retains their length.",
-        "params": [
-            {
-                "id": "period",
-                "name": "Every",
-                "default": 2,
-                "minimum": 2
-            }
-        ]
-    },
-    {
-        "id": "reverse",
-        "name": "Reverse",
-        "description": "Reverses beats.",
-        "params": [
-            {
-                "id": "period",
-                "name": "Every",
-                "default": 2,
-                "minimum": 1
-            }
-        ]
-    },
-    {
-        "id": "randomize",
-        "name": "Randomize",
-        "description": "Totally randomizes all beats. It's terrible. Don't use this. You don't want it.",
-        "params": []
-    }
+  {
+    "id": "remove",
+    "name": "Remove",
+    "description": "Removes beats entirely.",
+    "params": [
+      {
+        "id": "period",
+        "name": "Every",
+        "default": 2,
+        "minimum": 2
+      }
+    ]
+  },
+  {
+    "id": "swap",
+    "name": "Swap",
+    "description": "Swaps two beats throughout the entire song.",
+    "params": [
+      {
+        "id": "x_period",
+        "name": "First beat",
+        "default": 2,
+        "minimum": 1
+      },
+      {
+        "id": "y_period",
+        "name": "Second beat",
+        "default": 4,
+        "minimum": 1
+      },
+      {
+        "id": "group_size",
+        "name": "Beats per measure",
+        "default": 4,
+        "minimum": 2
+      }
+    ]
+  },
+  {
+    "id": "cut",
+    "name": "Cut",
+    "description": "Cuts beats in half.",
+    "params": [
+      {
+        "id": "period",
+        "name": "Every",
+        "default": 2,
+        "minimum": 1
+      }
+    ]
+  },
+  {
+    "id": "repeat",
+    "name": "Repeat",
+    "description": "Repeats beats a certain number of times.",
+    "params": [
+      {
+        "id": "period",
+        "name": "Every",
+        "default": 2,
+        "minimum": 1
+      },
+      {
+        "id": "times",
+        "name": "Times to repeat",
+        "default": 2,
+        "minimum": 1
+      }
+    ]
+  },
+  {
+    "id": "silence",
+    "name": "Silence",
+    "description": "Silences beats, but retains their length.",
+    "params": [
+      {
+        "id": "period",
+        "name": "Every",
+        "default": 2,
+        "minimum": 2
+      }
+    ]
+  },
+  {
+    "id": "reverse",
+    "name": "Reverse",
+    "description": "Reverses beats.",
+    "params": [
+      {
+        "id": "period",
+        "name": "Every",
+        "default": 2,
+        "minimum": 1
+      }
+    ]
+  },
+  {
+    "id": "randomize",
+    "name": "Randomize",
+    "description": "Totally randomizes all beats. It's terrible. Don't use this. You don't want it.",
+    "params": []
+  }
 ]

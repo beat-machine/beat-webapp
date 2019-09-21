@@ -8,10 +8,8 @@
       The Beat Machine is a webapp for creating beat-based edits of songs (i.e.
       X but every other beat is missing) from the comfort of your browser. It's
       also available as a
-      <a
-        href="https://pypi.org/project/beatmachine/"
-      >Python library</a>, which runs a lot faster and lets you
-      create your own effects.
+      <a href="https://pypi.org/project/beatmachine/">Python library</a>, which
+      runs a lot faster and lets you create your own effects.
     </p>
   </div>
 </template>
