@@ -1,35 +1,35 @@
 @import url("https://fonts.googleapis.com/css?family=Karla|Space+Mono&display=swap");
 
 :root {
-    color-scheme: light dark;
+  color-scheme: light dark;
 
-    --background: #111;
-    --frames: #aaa;
+  --background: #111;
+  --frames: #aaa;
 
-    --text: #aaa;
-    --disabled-text: #888;
-    --primary-text: #eee;
+  --text: #aaa;
+  --disabled-text: #888;
+  --primary-text: #eee;
 
-    --accent-1: #faeb2c;
-    --accent-2: #f52789;
-    --accent-3: #e900ff;
-    --accent-4: #1685f8; 
+  --accent-1: #faeb2c;
+  --accent-2: #f52789;
+  --accent-3: #e900ff;
+  --accent-4: #1685f8;
 }
 
-@media(prefers-color-scheme: light) {
-    :root {
-        --background: #fff;
-        --frames: #111;
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #fff;
+    --frames: #111;
 
-        --text: #111;
-        --disabled-text: #666;
-        --primary-text: #111;
+    --text: #111;
+    --disabled-text: #666;
+    --primary-text: #111;
 
-        --accent-1: #fa772c;
-        --accent-2: #f52789;
-        --accent-3: #e900ff;
-        --accent-4: #1685f8; 
-    }
+    --accent-1: #fa772c;
+    --accent-2: #f52789;
+    --accent-3: #e900ff;
+    --accent-4: #1685f8;
+  }
 }
 
 $background: var(--background);
@@ -46,7 +46,7 @@ $accent-4: var(--accent-4);
 $fast-ease: cubic-bezier(0.075, 0.82, 0.165, 1);
 
 @mixin highlightable {
-    :hover {
-        background-color: var(--accent-1);
-    }
+  :hover {
+    background-color: var(--accent-1);
+  }
 }

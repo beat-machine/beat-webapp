@@ -1,6 +1,8 @@
 <template>
-  <div class="field" :class="{'disabled': disabled}">
-    <label :for="fieldId" :class="{'stay-inline': inlineField}">{{ label }}:</label>
+  <div class="field" :class="{ disabled: disabled }">
+    <label :for="fieldId" :class="{ 'stay-inline': inlineField }"
+      >{{ label }}:</label
+    >
     <slot></slot>
     <span v-if="help">{{ help }}</span>
   </div>

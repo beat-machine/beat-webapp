@@ -1,9 +1,8 @@
 <template>
   <div class="effect-box">
-    <div
-      class="effect-header"
-      @click="collapsed = !collapsed"
-    >{{ '[' + (collapsed ? '+' : '-') + '] ' }} {{ header }}</div>
+    <div class="effect-header" @click="collapsed = !collapsed">
+      {{ "[" + (collapsed ? "+" : "-") + "] " }} {{ header }}
+    </div>
     <div class="container" v-show="!collapsed">
       <slot></slot>
     </div>

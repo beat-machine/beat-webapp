@@ -10,7 +10,7 @@
         label="MP3 File"
         help="Shorter songs process faster!"
       >
-        <styled-upload v-model="song" accept=".mp3,audio/mpeg"/>
+        <styled-upload v-model="song" accept=".mp3, audio/mpeg" />
       </descriptive-input>
       <collapsible-box header="Optional Settings" startCollapsed>
         <descriptive-input
@@ -19,7 +19,11 @@
           help="Check this to tell the AI what tempo to use."
           inlineField
         >
-          <styled-checkbox v-model="useCustomBpm" id="use-custom-bpm" type="checkbox" />
+          <styled-checkbox
+            v-model="useCustomBpm"
+            id="use-custom-bpm"
+            type="checkbox"
+          />
         </descriptive-input>
 
         <descriptive-input
@@ -59,8 +63,15 @@
     <section>
       <h1>Effects</h1>
       <p>Select up to 5 effects to add.</p>
-      <collapsible-box v-for="(effect, i) in effects" v-bind:key="i" :header="'Effect #' + (i + 1)">
-        <effect-selector v-bind:effects="effectDefinitions" ref="effect"></effect-selector>
+      <collapsible-box
+        v-for="(effect, i) in effects"
+        v-bind:key="i"
+        :header="'Effect #' + (i + 1)"
+      >
+        <effect-selector
+          v-bind:effects="effectDefinitions"
+          ref="effect"
+        ></effect-selector>
       </collapsible-box>
       <div class="buttons">
         <input
@@ -93,7 +104,12 @@
         </template>
       </div>
       <div class="player" v-if="audioUrl">
-        <audio v-bind:src="audioUrl" controls type="audio/mpeg" autostart="0"></audio>
+        <audio
+          v-bind:src="audioUrl"
+          controls
+          type="audio/mpeg"
+          autostart="0"
+        ></audio>
         <p>
           Right-click on the player above or
           <a :href="audioUrl" download>click here</a> to download.
@@ -101,36 +117,49 @@
       </div>
       <div class="buttons">
         <span class="submit-hint">{{ submitMessage }}</span>
-        <input value="Submit" type="button" v-on:click="submitSong()" :disabled="!canSubmit" />
+        <input
+          value="Submit"
+          type="button"
+          v-on:click="submitSong()"
+          :disabled="!canSubmit"
+        />
       </div>
     </section>
 
     <section class="subtle">
       <h1>Support</h1>
       <p>
-        If you enjoy The Beat Machine and would like to fund future development (better servers -> less timeouts), please consider supporting me on
-        Patreon! One-time tips are welcomed and even encouraged over subscriptions.
+        If you enjoy The Beat Machine and would like to fund future development
+        (better servers -> less timeouts), please consider supporting me on
+        Patreon! One-time tips are welcomed and even encouraged over
+        subscriptions.
       </p>
       <p>
-        Patrons get access to comprehensive behind-the-scenes status upgrades and can choose to have their names and social links featured here.
+        Patrons get access to comprehensive behind-the-scenes status upgrades
+        and can choose to have their names and social links featured here.
       </p>
       <div class="buttons">
-        <a href="https://www.patreon.com/branchpanic" class="button" target="_blank">Donate on Patreon</a>
+        <a
+          href="https://www.patreon.com/branchpanic"
+          class="button"
+          target="_blank"
+          >Donate on Patreon</a
+        >
       </div>
     </section>
 
     <div class="site-info">
       <p>
-        Last update: {{ commitInfo }} ({{ commitHash }})
-        on {{ commitTimestamp.getFullYear() }}-{{ ('0' + commitTimestamp.getMonth()).slice(-2) }}-{{ ('0' + commitTimestamp.getDate()).slice(-2) }}
+        Last update: {{ commitInfo }} ({{ commitHash }}) on
+        {{ commitTimestamp.getFullYear() }}-{{
+          ("0" + commitTimestamp.getMonth()).slice(-2)
+        }}-{{ ("0" + commitTimestamp.getDate()).slice(-2) }}
       </p>
       <p>
         Created by
-        <a href="https://twitter.com/branchpanic">@branchpanic</a>.
-        Check out the source for this page
-        <a
-          href="https://github.com/dhsavell/beat-webapp"
-        >here</a>.
+        <a href="https://twitter.com/branchpanic">@branchpanic</a>. Check out
+        the source for this page
+        <a href="https://github.com/dhsavell/beat-webapp">here</a>.
       </p>
     </div>
   </div>
@@ -308,7 +337,6 @@ export default {
   }
 }
 
-
 a {
   color: $primary-text;
   text-decoration: none;
@@ -319,17 +347,17 @@ a:hover {
 }
 
 section {
-    border: 2px solid $frames;
-    padding: 20px;
-    margin-bottom: 48px;
-    background-color: $background;
-    box-shadow: 8px 16px 0px 0px $frames;
-  }
-  
+  border: 2px solid $frames;
+  padding: 20px;
+  margin-bottom: 48px;
+  background-color: $background;
+  box-shadow: 8px 16px 0px 0px $frames;
+}
+
 section.subtle {
-    border: none;
-    box-shadow: none;
-}  
+  border: none;
+  box-shadow: none;
+}
 
 section h1 {
   margin-top: 0;
@@ -364,29 +392,28 @@ audio {
   margin-bottom: 0px;
 }
 
-
 body {
-    background-color: $background;
-    font-family: "Karla", sans-serif;
-    color: $text;
+  background-color: $background;
+  font-family: "Karla", sans-serif;
+  color: $text;
 }
 
 h1 {
-    font-family: "Space Mono", monospace;
-    color: $primary-text;
+  font-family: "Space Mono", monospace;
+  color: $primary-text;
 }
 
 #app {
-    padding-top: 40px;
-    padding-bottom: 40px;
-    width: 80%;
-  
-    @media (min-width: 1400px) {
-      width: 60%;
-    }
-  
-    margin-left: auto;
-    margin-right: auto;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  width: 80%;
+
+  @media (min-width: 1400px) {
+    width: 60%;
+  }
+
+  margin-left: auto;
+  margin-right: auto;
 }
 
 a.button {
@@ -397,28 +424,30 @@ a.button:hover {
   text-decoration: none;
 }
 
-input[type="button"], .button {
-    font-family: "Space Mono", monospace;
-    font-weight: bold;
-    border: none;
-    padding: 8px;
-    background-color: $text;
-    color: $background;
-    transition: background-color 0.12s $fast-ease;
+input[type="button"],
+.button {
+  font-family: "Space Mono", monospace;
+  font-weight: bold;
+  border: none;
+  padding: 8px;
+  background-color: $text;
+  color: $background;
+  transition: background-color 0.12s $fast-ease;
 }
 
-input[type="button"]:hover, .button:hover {
-    background-color: $accent-1;
+input[type="button"]:hover,
+.button:hover {
+  background-color: $accent-1;
 }
 
 input[type="button"]:disabled {
-    color: $disabled-text;
-    background-color: $background;
-    text-decoration: line-through;
+  color: $disabled-text;
+  background-color: $background;
+  text-decoration: line-through;
 }
 
 .buttons input[type="button"] {
-    margin-left: 16px;
+  margin-left: 16px;
 }
 
 a {
