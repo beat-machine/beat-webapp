@@ -14,5 +14,12 @@ module.exports = {
                 COMMIT_TIMESTAMP: `"${commitTimestamp}"`
             })
         ]
+    },
+    css: {
+        loaderOptions: {
+            sass: {
+                data: '@import "@/scss/global.scss";'
+            }
+        }
     }
 }

@@ -16,7 +16,7 @@
     --accent-4: #1685f8; 
 }
 
-@media(prefers-color-scheme: dark) {
+@media(prefers-color-scheme: light) {
     :root {
         --background: #fff;
         --frames: #111;
@@ -25,9 +25,10 @@
         --disabled-text: #666;
         --primary-text: #111;
 
-        --accent-1: #f00;
-        --accent-2: #e0e;
-        --accent-4: #00f;
+        --accent-1: #fa772c;
+        --accent-2: #f52789;
+        --accent-3: #e900ff;
+        --accent-4: #1685f8; 
     }
 }
 

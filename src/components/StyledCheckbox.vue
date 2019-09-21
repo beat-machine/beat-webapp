@@ -25,8 +25,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../scss/global.scss";
-
 .styled-checkbox {
   display: inline-block;
   width: 24px;

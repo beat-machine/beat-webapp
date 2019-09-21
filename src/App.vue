@@ -10,9 +10,9 @@
         label="MP3 File"
         help="Shorter songs process faster!"
       >
-        <input type="file" v-on:change="updateFile" accept=".mp3" />
+        <styled-upload v-model="song" accept=".mp3,audio/mpeg"/>
       </descriptive-input>
-      <collapsible-box header="Optional Beat Detection Settings" startCollapsed>
+      <collapsible-box header="Optional Settings" startCollapsed>
         <descriptive-input
           fieldId="use-custom-bpm"
           label="Custom Tempo"
@@ -89,7 +89,7 @@
         </template>
         <template v-if="error && !uploading && !processing">
           <h2>An error occurred ({{ error }}).</h2>
-          <p>Frequent network issues are being investigated. In the meantime, try again in a minute. The server might be under heavy load.</p>
+          <p>Try again in a moment. The server might be under heavy load.</p>
         </template>
       </div>
       <div class="player" v-if="audioUrl">
@@ -108,12 +108,15 @@
     <section class="subtle">
       <h1>Support</h1>
       <p>
-        If you enjoy The Beat Machine and would like to fund future development (i.e. better servers -> less timeouts), please consider supporting me on
+        If you enjoy The Beat Machine and would like to fund future development (better servers -> less timeouts), please consider supporting me on
         Patreon! One-time tips are welcomed and even encouraged over subscriptions.
       </p>
       <p>
-        Patrons get access to comprehensive behind-the-scenes status upgrades and prioritized feature requests.
+        Patrons get access to comprehensive behind-the-scenes status upgrades and can choose to have their names and social links featured here.
       </p>
+      <div class="buttons">
+        <a href="https://www.patreon.com/branchpanic" class="button" target="_blank">Donate on Patreon</a>
+      </div>
     </section>
 
     <div class="site-info">
@@ -140,6 +143,7 @@ import EffectSelector from "./components/EffectSelector.vue";
 import DescriptiveInput from "./components/DescriptiveInput.vue";
 import CollapsibleBox from "./components/CollapsibleBox.vue";
 import StyledCheckbox from "./components/StyledCheckbox.vue";
+import StyledUpload from "./components/StyledUpload.vue";
 import effectDefinitions from "./assets/effects.json";
 
 const BASE_URL = "https://beatfunc-zz5hrgpina-uc.a.run.app";
@@ -181,7 +185,8 @@ export default {
     EffectSelector,
     DescriptiveInput,
     CollapsibleBox,
-    StyledCheckbox
+    StyledCheckbox,
+    StyledUpload
   },
   computed: {
     effectCount() {
@@ -283,7 +288,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "./scss/global.scss";
+@import "@/scss/global.scss";
 
 @keyframes colors {
   0% {
@@ -303,35 +308,6 @@ export default {
   }
 }
 
-body {
-  background-color: $background;
-  font-family: "Karla", sans-serif;
-  color: $text;
-}
-
-.container {
-  padding: 16px;
-}
-
-h1 {
-  font-family: "Space Mono", monospace;
-  color: $primary-text;
-}
-
-input[type="button"] {
-  font-family: "Space Mono", monospace;
-  font-weight: bold;
-  border: none;
-  padding: 8px;
-  margin-left: 16px;
-  background-color: $text;
-  color: $background;
-  transition: background-color 0.1s $fast-ease;
-}
-
-input[type="button"]:hover {
-  background-color: $accent-1;
-}
 
 a {
   color: $primary-text;
@@ -342,37 +318,18 @@ a:hover {
   text-decoration: underline;
 }
 
-input[type="button"]:disabled {
-  color: $disabled-text;
-  background-color: $background;
-  text-decoration: line-through;
-}
-
-#app {
-  padding-top: 40px;
-  padding-bottom: 40px;
-  width: 80%;
-
-  @media (min-width: 1400px) {
-    width: 60%;
-  }
-
-  margin-left: auto;
-  margin-right: auto;
-}
-
 section {
-  border: 2px solid $frames;
-  padding: 20px;
-  margin-bottom: 48px;
-  background-color: $background;
-  box-shadow: 8px 16px 0px 0px $frames;
-}
-
+    border: 2px solid $frames;
+    padding: 20px;
+    margin-bottom: 48px;
+    background-color: $background;
+    box-shadow: 8px 16px 0px 0px $frames;
+  }
+  
 section.subtle {
-  border: none;
-  box-shadow: none;
-}
+    border: none;
+    box-shadow: none;
+}  
 
 section h1 {
   margin-top: 0;
@@ -405,5 +362,66 @@ audio {
   margin-top: 0;
   margin-left: 16px;
   margin-bottom: 0px;
+}
+
+
+body {
+    background-color: $background;
+    font-family: "Karla", sans-serif;
+    color: $text;
+}
+
+h1 {
+    font-family: "Space Mono", monospace;
+    color: $primary-text;
+}
+
+#app {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    width: 80%;
+  
+    @media (min-width: 1400px) {
+      width: 60%;
+    }
+  
+    margin-left: auto;
+    margin-right: auto;
+}
+
+a.button {
+  display: inline-block;
+}
+
+a.button:hover {
+  text-decoration: none;
+}
+
+input[type="button"], .button {
+    font-family: "Space Mono", monospace;
+    font-weight: bold;
+    border: none;
+    padding: 8px;
+    background-color: $text;
+    color: $background;
+    transition: background-color 0.12s $fast-ease;
+}
+
+input[type="button"]:hover, .button:hover {
+    background-color: $accent-1;
+}
+
+input[type="button"]:disabled {
+    color: $disabled-text;
+    background-color: $background;
+    text-decoration: line-through;
+}
+
+.buttons input[type="button"] {
+    margin-left: 16px;
+}
+
+a {
+  color: $accent-4;
 }
 </style>

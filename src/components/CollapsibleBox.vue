@@ -25,7 +25,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../scss/global.scss";
+.container {
+  padding: 16px;
+}
 
 .effect-box {
   border: 2px solid $text;
