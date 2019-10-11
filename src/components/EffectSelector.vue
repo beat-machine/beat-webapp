@@ -25,6 +25,7 @@
       :key="i"
       :fieldId="param.id"
       :label="param.name"
+      :help="param['help']"
     >
       <input
         type="number"

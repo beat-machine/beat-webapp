@@ -47,6 +47,20 @@
         "name": "Every",
         "default": 2,
         "minimum": 1
+      },
+      {
+        "id": "denominator",
+        "name": "Denominator",
+        "default": 2,
+        "minimum": 2,
+        "help": "Cuts each beat into this many pieces."
+      },
+      {
+        "id": "take_index",
+        "name": "Segment",
+        "default": 1,
+        "minimum": 1,
+        "help": "Piece of the cut beat to use, i.e. the first or second half."
       }
     ]
   },
