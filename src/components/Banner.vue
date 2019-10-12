@@ -61,6 +61,7 @@ export default {
 .title {
   margin-bottom: 0;
   line-height: 20px;
+  user-select: none;
 }
 
 .subtitle {

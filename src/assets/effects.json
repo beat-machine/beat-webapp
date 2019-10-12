@@ -19,19 +19,19 @@
     "params": [
       {
         "id": "x_period",
-        "name": "First beat",
+        "name": "First Beat",
         "default": 2,
         "minimum": 1
       },
       {
         "id": "y_period",
-        "name": "Second beat",
+        "name": "Second Beat",
         "default": 4,
         "minimum": 1
       },
       {
         "id": "group_size",
-        "name": "Beats per measure",
+        "name": "Beats/Measure",
         "default": 4,
         "minimum": 2
       }
@@ -40,7 +40,7 @@
   {
     "id": "cut",
     "name": "Cut",
-    "description": "Cuts beats in half.",
+    "description": "Cuts beats into 2+ pieces.",
     "params": [
       {
         "id": "period",
@@ -50,17 +50,17 @@
       },
       {
         "id": "denominator",
-        "name": "Denominator",
+        "name": "Pieces",
         "default": 2,
         "minimum": 2,
-        "help": "Cuts each beat into this many pieces."
+        "help": "Number of pieces to cut each beat into."
       },
       {
         "id": "take_index",
-        "name": "Segment",
+        "name": "Take Piece #",
         "default": 1,
         "minimum": 1,
-        "help": "Piece of the cut beat to use, i.e. the first or second half."
+        "help": "Piece of the cut beat to use."
       }
     ]
   },
@@ -77,7 +77,7 @@
       },
       {
         "id": "times",
-        "name": "Times to repeat",
+        "name": "Times",
         "default": 2,
         "minimum": 1
       }
@@ -112,7 +112,7 @@
   {
     "id": "randomize",
     "name": "Randomize",
-    "description": "Totally randomizes all beats. It's terrible. Don't use this. You don't want it.",
+    "description": "Totally randomizes all beats. It's terrible. You don't want this.",
     "params": []
   }
 ]

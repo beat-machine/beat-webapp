@@ -4,11 +4,10 @@
 
     <section>
       <h1>Upload</h1>
-      <p>Choose and configure a song.</p>
+      <p>Choose and configure a song. Shorter songs process faster!</p>
       <descriptive-input
         fieldId="suggested-bpm"
         label="MP3 File"
-        help="Shorter songs process faster!"
       >
         <styled-upload v-model="song" accept=".mp3, audio/mpeg" />
       </descriptive-input>
@@ -91,7 +90,7 @@
 
     <section>
       <h1>Result</h1>
-      <p>Press submit to render the result. This will probably take a while.</p>
+      <p>Press submit to render the result.</p>
       <div class="progress-info" v-if="uploading || processing || error">
         <h2 v-if="uploading">Uploading...</h2>
         <template v-if="processing">
@@ -131,12 +130,12 @@
       <p>
         If you enjoy The Beat Machine and would like to fund future development
         (better servers -> less timeouts), please consider supporting me on
-        Patreon! One-time tips are welcomed and even encouraged over
-        subscriptions.
+        Patreon! One-time tips are welcome.
       </p>
       <p>
-        Patrons get access to comprehensive behind-the-scenes status upgrades
-        and can choose to have their names and social links featured here.
+        Patrons get comprehensive status posts, polls concerning new
+        features, and optionally social links displayed at the bottom of this
+        site.
       </p>
       <div class="buttons">
         <a
