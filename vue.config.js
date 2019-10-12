@@ -21,6 +21,10 @@ module.exports = {
         COMMIT_INFO: `"${commitInfo}"`,
         COMMIT_HASH: `"${commitHash}"`,
         COMMIT_TIMESTAMP: `"${commitTimestamp}"`
+      }),
+      new webpack.EnvironmentPlugin({
+        BASE_URL: "https://beatfunc-zz5hrgpina-uc.a.run.app",
+        VERSION: "develop"
       })
     ]
   },
