@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Banner></Banner>
+    <banner></banner>
 
     <section>
       <h1>Upload</h1>
