@@ -18,9 +18,12 @@
         type="number"
         :id="param.id"
         :min="param.minimum"
+        @change="propagateChanges"
+        @input="propagateChanges"
         v-model.number="currentParams[param.id]"
       />
     </descriptive-input>
+    <span v-if="!valid" class="error">{{ validationError }}</span>
   </div>
 </template>
 
@@ -35,7 +38,9 @@ export default {
   data() {
     return {
       selectedEffectIndex: 0,
-      currentParams: {}
+      currentParams: {},
+      valid: true,
+      validationError: ''
     };
   },
   computed: {
@@ -52,15 +57,42 @@ export default {
       for (let x of this.selectedEffect.params) {
         this.currentParams[x.id] = x.default;
       }
+    },
+    validate() {
+      let error = this.selectedEffect.validate(this.currentParams)
+      if (error === null) {
+        this.valid = true;
+        this.validationError = ""
+      } else {
+        this.valid = false;
+        this.validationError = error;
+      }
+    },
+    propagateChanges() {
+      this.validate();
+      this.$emit('input', {
+        'effect': this.selectedEffect,
+        'serialized': { type: this.selectedEffect.id, ...this.selectedEffect.serialize(this.currentParams) },
+        ...this.$data
+      });
     }
   },
   watch: {
     selectedEffectIndex() {
       this.updateParams();
+      this.validate();
+      this.propagateChanges();
     }
   },
   created() {
     this.updateParams();
+    this.propagateChanges();
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.error {
+  color: var(--error);
+}
+</style>

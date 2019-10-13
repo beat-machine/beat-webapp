@@ -35,6 +35,10 @@ export default {
   transition: border-color 0.2s $fast-ease;
 }
 
+.effect-box.error {
+  border: 2px solid var(--error);
+}
+
 .effect-box:nth-child(n + 2):last-child {
   margin-bottom: 0;
 }
@@ -48,6 +52,10 @@ export default {
   user-select: none;
 
   transition: background-color 0.2s $fast-ease;
+}
+
+.error .effect-header {
+  background-color: var(--error);
 }
 
 .effect-box:hover .effect-header {

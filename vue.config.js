@@ -23,8 +23,8 @@ module.exports = {
         COMMIT_TIMESTAMP: `"${commitTimestamp}"`
       }),
       new webpack.EnvironmentPlugin({
-        BASE_URL: "https://beatfunc-zz5hrgpina-uc.a.run.app",
-        VERSION: "develop"
+        BEATAPP_BASE_URL: "https://beatfunc-zz5hrgpina-uc.a.run.app",
+        BEATAPP_VERSION: "develop"
       })
     ]
   },

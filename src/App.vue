@@ -55,8 +55,8 @@
     <section>
       <h1>Effects</h1>
       <p>Select up to 5 effects to add.</p>
-      <collapsible-box v-for="(effect, i) in effects" v-bind:key="i" :header="'Effect #' + (i + 1)">
-        <effect-selector v-bind:effects="effectDefinitions" ref="effect"></effect-selector>
+      <collapsible-box v-for="(effect, i) in effects" :key="i" :header="'Effect #' + (i + 1)" :class="{ error: !effect.valid }">
+        <effect-selector :effects="effectDefinitions" v-model="effects[i]"></effect-selector>
       </collapsible-box>
       <div class="buttons">
         <input
@@ -150,7 +150,8 @@ import DescriptiveInput from "./components/DescriptiveInput.vue";
 import CollapsibleBox from "./components/CollapsibleBox.vue";
 import StyledCheckbox from "./components/StyledCheckbox.vue";
 import StyledUpload from "./components/StyledUpload.vue";
-import effectDefinitions from "./assets/effects.json";
+
+import { effectDefinitions } from "@/js/effects";
 
 export default {
   name: "app",
@@ -183,7 +184,7 @@ export default {
       // eslint-disable-next-line
       commitTimestamp: new Date(parseInt(COMMIT_TIMESTAMP) * 1000),
 
-      version: process.env.VERSION,
+      version: process.env.BEATAPP_VERSION,
     };
   },
   components: {
@@ -196,10 +197,13 @@ export default {
   },
   computed: {
     effectCount() {
-      return this.$refs.effect.length;
+      return this.effects.length;
     },
     serializedEffects() {
-      return this.$refs.effect.map(e => e.serialized);
+      return this.effects.map(e => e.serialized);
+    },
+    invalidEffectsExist() {
+      return this.effects.some(e => !e.valid);
     },
     requestData() {
       let data = new FormData();
@@ -223,13 +227,15 @@ export default {
       return data;
     },
     canSubmit() {
-      return this.song != null && !this.uploading && !this.processing;
+      return this.song != null && !this.uploading && !this.processing && !this.invalidEffectsExist;
     },
     submitMessage() {
       if (this.song == null) {
         return "No song selected.";
       } else if (this.uploading || this.processing) {
         return "Wait for the current song to finish rendering first.";
+      } else if (this.invalidEffectsExist) {
+        return "One or more effects have problems."
       } else {
         return "";
       }
@@ -239,35 +245,15 @@ export default {
     updateFile(e) {
       this.song = e.target.files[0];
     },
-    invalidSwapEffectExists() {
-      for (let e of this.$refs.effect) {
-        let params = e.currentParams;
-        if (
-          "x_period" in params &&
-          "y_period" in params &&
-          params["x_period"] === params["y_period"]
-        ) {
-          return true;
-        }
-      }
-
-      return false;
-    },
     async submitSong() {
       if (this.processing) {
-        return;
-      }
-
-      if (this.invalidSwapEffectExists()) {
-        this.error =
-          "Can't swap a beat with itself. Double-check any swap effects.";
         return;
       }
 
       try {
         this.uploading = true;
         let result = await axios.post(
-          process.env.BASE_URL /* replaced by Webpack */,
+          process.env.BEATAPP_BASE_URL /* replaced by Webpack */,
           this.requestData,
           {
             headers: {
