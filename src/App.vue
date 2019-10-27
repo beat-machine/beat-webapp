@@ -3,7 +3,7 @@
     <banner></banner>
 
     <section>
-      <h1>Upload</h1>
+      <h1>Song</h1>
       <p>Choose and configure a song. Shorter songs process faster!</p>
       <descriptive-input fieldId="suggested-bpm" label="MP3 File">
         <styled-upload v-model="song" accept=".mp3, audio/mpeg" />
