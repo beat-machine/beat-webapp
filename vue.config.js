@@ -24,7 +24,7 @@ module.exports = {
       }),
       new webpack.EnvironmentPlugin({
         BEATAPP_BASE_URL: "https://beatfunc-zz5hrgpina-uc.a.run.app",
-        BEATAPP_VERSION: "develop"
+        BEATAPP_VERSION: require("./package.json").version
       })
     ]
   },

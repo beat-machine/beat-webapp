@@ -49,6 +49,7 @@ export default {
   font-family: "Space Mono", monospace;
   padding: 4px;
   text-transform: uppercase;
+  font-weight: bold;
   user-select: none;
 
   transition: background-color 0.2s $fast-ease;

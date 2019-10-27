@@ -67,17 +67,17 @@ export let effectDefinitions = [
       },
       {
         id: "denominator",
-        name: "Pieces",
+        name: "# of Pieces",
         default: 2,
         minimum: 2,
-        help: "Number of pieces to cut each beat into."
+        help: "How many pieces should each beat be cut into?"
       },
       {
         id: "take_index",
-        name: "Take Piece #",
+        name: "Piece to Keep",
         default: 1,
         minimum: 1,
-        help: "Piece of the cut beat to use."
+        help: "Which one of those pieces should be kept?"
       }
     ],
     validate(paramObj) {

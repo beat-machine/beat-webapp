@@ -12,7 +12,7 @@
         <descriptive-input
           fieldId="use-custom-bpm"
           label="Custom Tempo"
-          help="Check this to tell the AI what tempo to use."
+          help="Results not quite what you expected? Check this to set a custom tempo."
           inlineField
         >
           <v-checkbox
@@ -126,13 +126,13 @@
     <section class="subtle">
       <h1>Support</h1>
       <p>
-        If you enjoy The Beat Machine and would like to fund future development
-        (better servers -> less timeouts), please consider supporting me on
-        Patreon! One-time tips are welcome.
+        If you enjoy The Beat Machine and would like to fund future development,
+        please consider donating on Patreon! One-time tips are welcome and
+        are really useful.
       </p>
       <p>
         Patrons get comprehensive status posts, polls concerning new features,
-        and optionally social links displayed at the bottom of this site.
+        and optionally social links displayed at the bottom of this page.
       </p>
       <div class="buttons">
         <a
@@ -146,16 +146,17 @@
 
     <div class="site-info">
       <p>
+        Version {{ version }}. Created by
+        <a href="https://twitter.com/branchpanic">@branchpanic</a>. Check out
+        the source for this page
+        <a href="https://github.com/dhsavell/beat-webapp">here</a>. Bug
+        reports and suggestions are <a href="https://github.com/dhsavell/beat-webapp/issues">welcome on GitHub</a>!
+      </p>
+      <p>
         Last commit: {{ commitInfo }} ({{ commitHash }}) on
         {{ commitTimestamp.getFullYear() }}-{{
           ("0" + commitTimestamp.getMonth()).slice(-2)
         }}-{{ ("0" + commitTimestamp.getDate()).slice(-2) }}
-      </p>
-      <p>
-        Version {{ version }}. Created by
-        <a href="https://twitter.com/branchpanic">@branchpanic</a>. Check out
-        the source for this page
-        <a href="https://github.com/dhsavell/beat-webapp">here</a>.
       </p>
     </div>
   </div>
@@ -207,7 +208,7 @@ export default {
     };
   },
   components: {
-    Banner,
+    TheBanner,
     EffectSelector,
     DescriptiveInput,
     CollapsibleBox,
@@ -337,8 +338,8 @@ a:hover {
 }
 
 section {
-  border: 2px solid $frames;
-  padding: 20px;
+  border: 3px solid $frames;
+  padding: 22px;
   margin-bottom: 48px;
   background-color: $background;
   box-shadow: 8px 16px 0px 0px $frames;
@@ -350,6 +351,7 @@ section.subtle {
 }
 
 section h1 {
+  font-size: 2.2em;
   margin-top: 0;
   margin-bottom: 2px;
 }
