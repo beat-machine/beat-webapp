@@ -1,12 +1,12 @@
 <template>
   <div id="app">
-    <banner></banner>
+    <the-banner></the-banner>
 
     <section>
       <h1>Song</h1>
       <p>Choose and configure a song. Shorter songs process faster!</p>
       <descriptive-input fieldId="suggested-bpm" label="MP3 File">
-        <styled-upload v-model="song" accept=".mp3, audio/mpeg" />
+        <v-upload v-model="song" accept=".mp3, audio/mpeg" />
       </descriptive-input>
       <collapsible-box header="Optional Settings" startCollapsed>
         <descriptive-input
@@ -15,7 +15,11 @@
           help="Check this to tell the AI what tempo to use."
           inlineField
         >
-          <styled-checkbox v-model="useCustomBpm" id="use-custom-bpm" type="checkbox" />
+          <v-checkbox
+            v-model="useCustomBpm"
+            id="use-custom-bpm"
+            type="checkbox"
+          />
         </descriptive-input>
 
         <descriptive-input
@@ -55,8 +59,16 @@
     <section>
       <h1>Effects</h1>
       <p>Select up to 5 effects to add.</p>
-      <collapsible-box v-for="(effect, i) in effects" :key="i" :header="'Effect #' + (i + 1)" :class="{ error: !effect.valid }">
-        <effect-selector :effects="effectDefinitions" v-model="effects[i]"></effect-selector>
+      <collapsible-box
+        v-for="(effect, i) in effects"
+        :key="i"
+        :header="'Effect #' + (i + 1)"
+        :class="{ error: !effect.valid }"
+      >
+        <effect-selector
+          :effects="effectDefinitions"
+          v-model="effects[i]"
+        ></effect-selector>
       </collapsible-box>
       <div class="buttons">
         <input
@@ -89,7 +101,12 @@
         </template>
       </div>
       <div class="player" v-if="audioUrl">
-        <audio v-bind:src="audioUrl" controls type="audio/mpeg" autostart="0"></audio>
+        <audio
+          v-bind:src="audioUrl"
+          controls
+          type="audio/mpeg"
+          autostart="0"
+        ></audio>
         <p>
           Right-click on the player above or
           <a :href="audioUrl" download>click here</a> to download.
@@ -97,7 +114,12 @@
       </div>
       <div class="buttons">
         <span class="submit-hint">{{ submitMessage }}</span>
-        <input value="Submit" type="button" v-on:click="submitSong()" :disabled="!canSubmit" />
+        <input
+          value="Submit"
+          type="button"
+          v-on:click="submitSong()"
+          :disabled="!canSubmit"
+        />
       </div>
     </section>
 
@@ -109,16 +131,16 @@
         Patreon! One-time tips are welcome.
       </p>
       <p>
-        Patrons get comprehensive status posts, polls concerning new
-        features, and optionally social links displayed at the bottom of this
-        site.
+        Patrons get comprehensive status posts, polls concerning new features,
+        and optionally social links displayed at the bottom of this site.
       </p>
       <div class="buttons">
         <a
           href="https://www.patreon.com/branchpanic"
           class="button"
           target="_blank"
-        >Donate on Patreon</a>
+          >Donate on Patreon</a
+        >
       </div>
     </section>
 
@@ -126,17 +148,14 @@
       <p>
         Last commit: {{ commitInfo }} ({{ commitHash }}) on
         {{ commitTimestamp.getFullYear() }}-{{
-        ("0" + commitTimestamp.getMonth()).slice(-2)
+          ("0" + commitTimestamp.getMonth()).slice(-2)
         }}-{{ ("0" + commitTimestamp.getDate()).slice(-2) }}
       </p>
       <p>
-        Version {{ version }}.
-        Created by
+        Version {{ version }}. Created by
         <a href="https://twitter.com/branchpanic">@branchpanic</a>. Check out
         the source for this page
-        <a
-          href="https://github.com/dhsavell/beat-webapp"
-        >here</a>.
+        <a href="https://github.com/dhsavell/beat-webapp">here</a>.
       </p>
     </div>
   </div>
@@ -144,12 +163,12 @@
 
 <script>
 import axios from "axios";
-import Banner from "./components/Banner.vue";
+import TheBanner from "./components/TheBanner.vue";
 import EffectSelector from "./components/EffectSelector.vue";
 import DescriptiveInput from "./components/DescriptiveInput.vue";
 import CollapsibleBox from "./components/CollapsibleBox.vue";
-import StyledCheckbox from "./components/StyledCheckbox.vue";
-import StyledUpload from "./components/StyledUpload.vue";
+import VCheckbox from "./components/VCheckbox.vue";
+import VUpload from "./components/VUpload.vue";
 
 import { effectDefinitions } from "@/js/effects";
 
@@ -184,7 +203,7 @@ export default {
       // eslint-disable-next-line
       commitTimestamp: new Date(parseInt(COMMIT_TIMESTAMP) * 1000),
 
-      version: process.env.BEATAPP_VERSION,
+      version: process.env.BEATAPP_VERSION
     };
   },
   components: {
@@ -192,8 +211,8 @@ export default {
     EffectSelector,
     DescriptiveInput,
     CollapsibleBox,
-    StyledCheckbox,
-    StyledUpload
+    VCheckbox,
+    VUpload
   },
   computed: {
     effectCount() {
@@ -227,7 +246,12 @@ export default {
       return data;
     },
     canSubmit() {
-      return this.song != null && !this.uploading && !this.processing && !this.invalidEffectsExist;
+      return (
+        this.song != null &&
+        !this.uploading &&
+        !this.processing &&
+        !this.invalidEffectsExist
+      );
     },
     submitMessage() {
       if (this.song == null) {
@@ -235,7 +259,7 @@ export default {
       } else if (this.uploading || this.processing) {
         return "Wait for the current song to finish rendering first.";
       } else if (this.invalidEffectsExist) {
-        return "One or more effects have problems."
+        return "One or more effects have problems.";
       } else {
         return "";
       }
