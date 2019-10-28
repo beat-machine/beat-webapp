@@ -1,25 +1,25 @@
 <template>
   <div id="app">
-    <Banner></Banner>
+    <the-banner></the-banner>
 
-    <section class="upload">
-      <h1>Upload</h1>
-      <p>Choose and configure a song.</p>
-      <descriptive-input
-        fieldId="suggested-bpm"
-        label="MP3 File"
-        help="Shorter songs process faster!"
-      >
-        <input type="file" v-on:change="updateFile" accept=".mp3" />
+    <section>
+      <h1>Song</h1>
+      <p>Choose and configure a song. Shorter songs process faster!</p>
+      <descriptive-input fieldId="suggested-bpm" label="MP3 File">
+        <v-upload v-model="song" accept=".mp3, audio/mpeg" />
       </descriptive-input>
-      <collapsible-box header="Optional Beat Detection Settings" startCollapsed>
+      <collapsible-box header="Optional Settings" startCollapsed>
         <descriptive-input
           fieldId="use-custom-bpm"
           label="Custom Tempo"
-          help="Check this to tell the AI what tempo to use."
+          help="Results not quite what you expected? Check this to set a custom tempo."
           inlineField
         >
-          <styled-checkbox v-model="useCustomBpm" id="use-custom-bpm" type="checkbox" />
+          <v-checkbox
+            v-model="useCustomBpm"
+            id="use-custom-bpm"
+            type="checkbox"
+          />
         </descriptive-input>
 
         <descriptive-input
@@ -39,7 +39,7 @@
         </descriptive-input>
 
         <descriptive-input
-          fieldId="suggested-bpm"
+          fieldId="max-drift"
           label="BPM Drift"
           help="Max deviation from the given BPM."
           :disabled="!useCustomBpm"
@@ -56,11 +56,19 @@
       </collapsible-box>
     </section>
 
-    <section class="effects">
+    <section>
       <h1>Effects</h1>
       <p>Select up to 5 effects to add.</p>
-      <collapsible-box v-for="(effect, i) in effects" v-bind:key="i" :header="'Effect #' + (i + 1)">
-        <effect-selector v-bind:effects="effectDefinitions" ref="effect"></effect-selector>
+      <collapsible-box
+        v-for="(effect, i) in effects"
+        :key="i"
+        :header="'Effect #' + (i + 1)"
+        :class="{ error: !effect.valid }"
+      >
+        <effect-selector
+          :effects="effectDefinitions"
+          v-model="effects[i]"
+        ></effect-selector>
       </collapsible-box>
       <div class="buttons">
         <input
@@ -78,9 +86,9 @@
       </div>
     </section>
 
-    <section class="submit">
+    <section>
       <h1>Result</h1>
-      <p>Press submit to render the result. This will probably take a while.</p>
+      <p>Press submit to render the result.</p>
       <div class="progress-info" v-if="uploading || processing || error">
         <h2 v-if="uploading">Uploading...</h2>
         <template v-if="processing">
@@ -89,11 +97,25 @@
         </template>
         <template v-if="error && !uploading && !processing">
           <h2>An error occurred ({{ error }}).</h2>
-          <p>Frequent network issues are being investigated. In the meantime, try again in a minute. The server might be under heavy load.</p>
+          <p>
+            Try again in a moment. Unfortunately, timeouts haven't been fixed
+            yet :(.
+          </p>
+          <p>
+            If you think you've found a bug,
+            <a href="https://github.com/dhsavell/beat-webapp/issues"
+              >report it on GitHub</a
+            >!
+          </p>
         </template>
       </div>
       <div class="player" v-if="audioUrl">
-        <audio v-bind:src="audioUrl" controls type="audio/mpeg" autostart="0"></audio>
+        <audio
+          v-bind:src="audioUrl"
+          controls
+          type="audio/mpeg"
+          autostart="0"
+        ></audio>
         <p>
           Right-click on the player above or
           <a :href="audioUrl" download>click here</a> to download.
@@ -101,22 +123,56 @@
       </div>
       <div class="buttons">
         <span class="submit-hint">{{ submitMessage }}</span>
-        <input value="Submit" type="button" v-on:click="submitSong()" :disabled="!canSubmit" />
+        <input
+          value="Submit"
+          type="button"
+          v-on:click="submitSong()"
+          :disabled="!canSubmit"
+        />
+      </div>
+    </section>
+
+    <section class="subtle">
+      <h1>Support</h1>
+      <p>
+        If you enjoy The Beat Machine and would like to fund future development,
+        please consider donating on Patreon! One-time tips are welcome and are
+        really useful.
+      </p>
+      <p>
+        Patrons get comprehensive status posts, polls about new features, and
+        optionally names and social links displayed on this page.
+      </p>
+      <div class="buttons">
+        <a
+          href="https://www.patreon.com/branchpanic"
+          class="button"
+          target="_blank"
+          >Donate on Patreon</a
+        >
       </div>
     </section>
 
     <div class="site-info">
       <p>
-        Last update: {{ commitInfo }} ({{ commitHash }})
-        on {{ commitTimestamp.getFullYear() }}-{{ ('0' + commitTimestamp.getMonth()).slice(-2) }}-{{ ('0' + commitTimestamp.getDate()).slice(-2) }}
+        Version {{ version }} (changelogs are posted
+        <a
+          href="https://www.patreon.com/branchpanic/posts?tag=beatmachine-releases"
+          >for free on Patreon</a
+        >). Created by
+        <a href="https://twitter.com/branchpanic">@branchpanic</a>. Check out
+        the source for this page
+        <a href="https://github.com/dhsavell/beat-webapp">here</a>. Bug reports
+        and suggestions are
+        <a href="https://github.com/dhsavell/beat-webapp/issues"
+          >welcome on GitHub</a
+        >!
       </p>
       <p>
-        Created by
-        <a href="https://twitter.com/branchpanic">@branchpanic</a>.
-        Check out the source for this page
-        <a
-          href="https://github.com/dhsavell/beat-webapp"
-        >here</a>.
+        Last commit: {{ commitInfo }} ({{ commitHash }}) on
+        {{ commitTimestamp.getFullYear() }}-{{
+          ("0" + commitTimestamp.getMonth()).slice(-2)
+        }}-{{ ("0" + commitTimestamp.getDate()).slice(-2) }}
       </p>
     </div>
   </div>
@@ -124,14 +180,14 @@
 
 <script>
 import axios from "axios";
-import Banner from "./components/Banner.vue";
+import TheBanner from "./components/TheBanner.vue";
 import EffectSelector from "./components/EffectSelector.vue";
 import DescriptiveInput from "./components/DescriptiveInput.vue";
 import CollapsibleBox from "./components/CollapsibleBox.vue";
-import StyledCheckbox from "./components/StyledCheckbox.vue";
-import effectDefinitions from "./assets/effects.json";
+import VCheckbox from "./components/VCheckbox.vue";
+import VUpload from "./components/VUpload.vue";
 
-const BASE_URL = "https://beatfunc-zz5hrgpina-uc.a.run.app";
+import { effectDefinitions } from "@/js/effects";
 
 export default {
   name: "app",
@@ -162,22 +218,28 @@ export default {
       commitHash: COMMIT_HASH,
 
       // eslint-disable-next-line
-      commitTimestamp: new Date(parseInt(COMMIT_TIMESTAMP) * 1000)
+      commitTimestamp: new Date(parseInt(COMMIT_TIMESTAMP) * 1000),
+
+      version: process.env.BEATAPP_VERSION
     };
   },
   components: {
-    Banner,
+    TheBanner,
     EffectSelector,
     DescriptiveInput,
     CollapsibleBox,
-    StyledCheckbox
+    VCheckbox,
+    VUpload
   },
   computed: {
     effectCount() {
-      return this.$refs.effect.length;
+      return this.effects.length;
     },
     serializedEffects() {
-      return this.$refs.effect.map(e => e.serialized);
+      return this.effects.map(e => e.serialized);
+    },
+    invalidEffectsExist() {
+      return this.effects.some(e => !e.valid);
     },
     requestData() {
       let data = new FormData();
@@ -201,13 +263,20 @@ export default {
       return data;
     },
     canSubmit() {
-      return this.song != null && !this.uploading && !this.processing;
+      return (
+        this.song != null &&
+        !this.uploading &&
+        !this.processing &&
+        !this.invalidEffectsExist
+      );
     },
     submitMessage() {
       if (this.song == null) {
         return "No song selected.";
       } else if (this.uploading || this.processing) {
         return "Wait for the current song to finish rendering first.";
+      } else if (this.invalidEffectsExist) {
+        return "One or more effects have problems.";
       } else {
         return "";
       }
@@ -217,45 +286,28 @@ export default {
     updateFile(e) {
       this.song = e.target.files[0];
     },
-    invalidSwapEffectExists() {
-      for (let e of this.$refs.effect) {
-        let params = e.currentParams;
-        if (
-          "x_period" in params &&
-          "y_period" in params &&
-          params["x_period"] === params["y_period"]
-        ) {
-          return true;
-        }
-      }
-
-      return false;
-    },
     async submitSong() {
       if (this.processing) {
         return;
       }
 
-      if (this.invalidSwapEffectExists()) {
-        this.error =
-          "Can't swap a beat with itself. Double-check any swap effects.";
-        return;
-      }
-
       try {
         this.uploading = true;
-
-        let result = await axios.post(BASE_URL, this.requestData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          },
-          responseType: "blob",
-          timeout: 480 * 1000,
-          onUploadProgress: function(event) {
-            this.uploading = event.loaded < event.total;
-            this.processing = !this.uploading;
-          }.bind(this)
-        });
+        let result = await axios.post(
+          process.env.BEATAPP_BASE_URL /* replaced by Webpack */,
+          this.requestData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            },
+            responseType: "blob",
+            timeout: 480 * 1000,
+            onUploadProgress: function(event) {
+              this.uploading = event.loaded < event.total;
+              this.processing = !this.uploading;
+            }.bind(this)
+          }
+        );
 
         let blob = new Blob([result.data], { type: "audio/mpeg" });
         this.audioUrl = URL.createObjectURL(blob);
@@ -272,7 +324,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "./scss/global.scss";
+@import "@/scss/global.scss";
 
 @keyframes colors {
   0% {
@@ -292,36 +344,6 @@ export default {
   }
 }
 
-body {
-  background-color: $background;
-  font-family: "Karla", sans-serif;
-  color: $text;
-}
-
-.container {
-  padding: 16px;
-}
-
-h1 {
-  font-family: "Space Mono", monospace;
-  color: $primary-text;
-}
-
-input[type="button"] {
-  font-family: "Space Mono", monospace;
-  font-weight: bold;
-  border: none;
-  padding: 8px;
-  margin-left: 16px;
-  background-color: $text;
-  color: $background;
-  transition: background-color 0.1s $fast-ease;
-}
-
-input[type="button"]:hover {
-  background-color: $accent-1;
-}
-
 a {
   color: $primary-text;
   text-decoration: none;
@@ -331,34 +353,21 @@ a:hover {
   text-decoration: underline;
 }
 
-input[type="button"]:disabled {
-  color: $disabled-text;
-  background-color: $background;
-  text-decoration: line-through;
-}
-
-#app {
-  padding-top: 40px;
-  padding-bottom: 40px;
-  width: 80%;
-
-  @media (min-width: 1400px) {
-    width: 60%;
-  }
-
-  margin-left: auto;
-  margin-right: auto;
-}
-
 section {
-  border: 2px solid $text;
-  padding: 20px;
+  border: 3px solid $frames;
+  padding: 22px;
   margin-bottom: 48px;
   background-color: $background;
-  box-shadow: 8px 16px 0px 0px $text;
+  box-shadow: 8px 16px 0px 0px $frames;
+}
+
+section.subtle {
+  border: none;
+  box-shadow: none;
 }
 
 section h1 {
+  font-size: 2.2em;
   margin-top: 0;
   margin-bottom: 2px;
 }
@@ -389,5 +398,67 @@ audio {
   margin-top: 0;
   margin-left: 16px;
   margin-bottom: 0px;
+}
+
+body {
+  background-color: $background;
+  font-family: "Karla", sans-serif;
+  color: $text;
+}
+
+h1 {
+  font-family: "Space Mono", monospace;
+  color: $primary-text;
+}
+
+#app {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  width: 80%;
+
+  @media (min-width: 1400px) {
+    width: 60%;
+  }
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+a.button {
+  display: inline-block;
+}
+
+a.button:hover {
+  text-decoration: none;
+}
+
+input[type="button"],
+.button {
+  font-family: "Space Mono", monospace;
+  font-weight: bold;
+  border: none;
+  padding: 8px;
+  background-color: $text;
+  color: $background;
+  transition: background-color 0.12s $fast-ease;
+}
+
+input[type="button"]:hover,
+.button:hover {
+  background-color: $accent-1;
+}
+
+input[type="button"]:disabled {
+  color: $disabled-text;
+  background-color: $background;
+  text-decoration: line-through;
+}
+
+.buttons input[type="button"] {
+  margin-left: 16px;
+}
+
+a {
+  color: $accent-4;
 }
 </style>

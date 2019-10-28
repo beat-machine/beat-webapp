@@ -1,9 +1,8 @@
 <template>
   <div class="effect-box">
-    <div
-      class="effect-header"
-      @click="collapsed = !collapsed"
-    >{{ '[' + (collapsed ? '+' : '-') + '] ' }} {{ header }}</div>
+    <div class="effect-header" @click="collapsed = !collapsed">
+      {{ "[" + (collapsed ? "+" : "-") + "] " }} {{ header }}
+    </div>
     <div class="container" v-show="!collapsed">
       <slot></slot>
     </div>
@@ -25,13 +24,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../scss/global.scss";
+.container {
+  padding: 16px;
+}
 
 .effect-box {
   border: 2px solid $text;
   margin-bottom: 16px;
 
   transition: border-color 0.2s $fast-ease;
+}
+
+.effect-box.error {
+  border: 2px solid var(--error);
 }
 
 .effect-box:nth-child(n + 2):last-child {
@@ -44,9 +49,14 @@ export default {
   font-family: "Space Mono", monospace;
   padding: 4px;
   text-transform: uppercase;
+  font-weight: bold;
   user-select: none;
 
   transition: background-color 0.2s $fast-ease;
+}
+
+.error .effect-header {
+  background-color: var(--error);
 }
 
 .effect-box:hover .effect-header {
