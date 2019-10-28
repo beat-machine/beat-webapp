@@ -8,7 +8,7 @@ This project doesn't use Semantic Versioning because it's ultimately
 user-facing and can't be used as a library. Instead, date-based versions
 (YY.MM.revision) are used.
 
-## [Unreleased]
+## [19.10.0] - 2019-10-27
 
 ### Added
 
