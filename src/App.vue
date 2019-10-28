@@ -98,10 +98,14 @@
         <template v-if="error && !uploading && !processing">
           <h2>An error occurred ({{ error }}).</h2>
           <p>
-            Try again in a moment. Unfortunately, timeouts haven't been fixed yet :(.
+            Try again in a moment. Unfortunately, timeouts haven't been fixed
+            yet :(.
           </p>
           <p>
-            If you think you've found a bug, <a href="https://github.com/dhsavell/beat-webapp/issues">report it on GitHub</a>!
+            If you think you've found a bug,
+            <a href="https://github.com/dhsavell/beat-webapp/issues"
+              >report it on GitHub</a
+            >!
           </p>
         </template>
       </div>
@@ -136,8 +140,8 @@
         really useful.
       </p>
       <p>
-        Patrons get comprehensive status posts, polls concerning new features,
-        and optionally social links displayed at the bottom of this page.
+        Patrons get comprehensive status posts, polls about new features, and
+        optionally names and social links displayed on this page.
       </p>
       <div class="buttons">
         <a
@@ -151,7 +155,11 @@
 
     <div class="site-info">
       <p>
-        Version {{ version }} (changelogs are posted <a href="https://www.patreon.com/branchpanic/posts?tag=beatmachine-releases">for free on Patreon</a>). Created by
+        Version {{ version }} (changelogs are posted
+        <a
+          href="https://www.patreon.com/branchpanic/posts?tag=beatmachine-releases"
+          >for free on Patreon</a
+        >). Created by
         <a href="https://twitter.com/branchpanic">@branchpanic</a>. Check out
         the source for this page
         <a href="https://github.com/dhsavell/beat-webapp">here</a>. Bug reports
