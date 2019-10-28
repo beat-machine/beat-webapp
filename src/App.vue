@@ -97,7 +97,12 @@
         </template>
         <template v-if="error && !uploading && !processing">
           <h2>An error occurred ({{ error }}).</h2>
-          <p>Try again in a moment. The server might be under heavy load.</p>
+          <p>
+            Try again in a moment. Unfortunately, timeouts haven't been fixed yet :(.
+          </p>
+          <p>
+            If you think you've found a bug, <a href="https://github.com/dhsavell/beat-webapp/issues">report it on GitHub</a>!
+          </p>
         </template>
       </div>
       <div class="player" v-if="audioUrl">
@@ -127,8 +132,8 @@
       <h1>Support</h1>
       <p>
         If you enjoy The Beat Machine and would like to fund future development,
-        please consider donating on Patreon! One-time tips are welcome and
-        are really useful.
+        please consider donating on Patreon! One-time tips are welcome and are
+        really useful.
       </p>
       <p>
         Patrons get comprehensive status posts, polls concerning new features,
@@ -146,11 +151,14 @@
 
     <div class="site-info">
       <p>
-        Version {{ version }}. Created by
+        Version {{ version }} (changelogs are posted <a href="https://www.patreon.com/branchpanic/posts?tag=beatmachine-releases">for free on Patreon</a>). Created by
         <a href="https://twitter.com/branchpanic">@branchpanic</a>. Check out
         the source for this page
-        <a href="https://github.com/dhsavell/beat-webapp">here</a>. Bug
-        reports and suggestions are <a href="https://github.com/dhsavell/beat-webapp/issues">welcome on GitHub</a>!
+        <a href="https://github.com/dhsavell/beat-webapp">here</a>. Bug reports
+        and suggestions are
+        <a href="https://github.com/dhsavell/beat-webapp/issues"
+          >welcome on GitHub</a
+        >!
       </p>
       <p>
         Last commit: {{ commitInfo }} ({{ commitHash }}) on

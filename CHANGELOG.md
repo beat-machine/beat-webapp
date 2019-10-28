@@ -12,12 +12,18 @@ user-facing and can't be used as a library. Instead, date-based versions
 
 ### Added
 
-- Unit tests for most components
-- Patreon support link, because I'm poor
+- Unit tests for effect selector (WIP, more will be added as time goes on...)
+- Patreon support link, because I'm selling myself out I guess
 - Stronger, more user-friendly validation for effects
 - Light theme to match system (try it on macOS!)
+- Version at bottom of page
+- Bug reporting link
 
 ### Changed
 
 - Cut effect to be way more versatile
   - Now accepts a custom denominator and piece to take
+- Various minor design changes
+  - Renamed "Upload" box to "Song"
+  - Increased size of headers
+  - Increased thickness of borders
