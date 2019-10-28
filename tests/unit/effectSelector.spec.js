@@ -84,14 +84,6 @@ describe("EffectSelector.vue", () => {
     expect(wrapper.findAll("input").length).toBe(2);
   });
 
-  it("applies default values from effect definitions on change", () => {
-    const wrapper = createWrapperWithSampleEffects();
-    wrapper.find("select").setValue(1);
-    let inputs = wrapper.findAll("input");
-    // expect(inputs.at(0).element.value).toBe("0"); TODO: This works but ends up being an empty string "" only in the test env.
-    expect(inputs.at(1).element.value).toBe("2");
-  });
-
   it("applies lower bounds from effect definitions on change", () => {
     const wrapper = createWrapperWithSampleEffects();
     wrapper.find("select").setValue(1);
