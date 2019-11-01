@@ -135,9 +135,8 @@
     <section class="subtle">
       <h1>Support</h1>
       <p>
-        If you enjoy The Beat Machine and would like to fund future development,
-        please consider donating on Patreon! One-time tips are welcome and are
-        really useful.
+        If you enjoy The Beat Machine, please consider donating on Patreon!
+        One-time tips are welcome and are really useful.
       </p>
       <p>
         Patrons get comprehensive status posts, polls about new features, and
@@ -150,6 +149,16 @@
           target="_blank"
           >Donate on Patreon</a
         >
+      </div>
+      <h3>Thanks to the following patrons for their support!</h3>
+      <div class="patrons">
+        <v-patron
+          v-for="(patron, i) in patrons"
+          :key="i"
+          :name="patron.name"
+          :tier="patron.tier"
+          :links="patron.links"
+        ></v-patron>
       </div>
     </section>
 
@@ -186,8 +195,10 @@ import DescriptiveInput from "./components/DescriptiveInput.vue";
 import CollapsibleBox from "./components/CollapsibleBox.vue";
 import VCheckbox from "./components/VCheckbox.vue";
 import VUpload from "./components/VUpload.vue";
+import VPatron from "./components/VPatron.vue";
 
 import { effectDefinitions } from "@/js/effects";
+import patrons from "@/assets/patrons.json";
 
 export default {
   name: "app",
@@ -209,6 +220,8 @@ export default {
       suggestedBpm: 100,
       drift: 15,
 
+      patrons: patrons,
+
       // Webpack injected constants (all remaining properties)
 
       // eslint-disable-next-line
@@ -229,7 +242,8 @@ export default {
     DescriptiveInput,
     CollapsibleBox,
     VCheckbox,
-    VUpload
+    VUpload,
+    VPatron
   },
   computed: {
     effectCount() {
@@ -460,5 +474,12 @@ input[type="button"]:disabled {
 
 a {
   color: $accent-4;
+}
+
+.patrons {
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 </style>
