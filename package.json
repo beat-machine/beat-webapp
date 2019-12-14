@@ -1,0 +1,36 @@
+{
+  "name": "beatapp",
+  "version": "19.12.0",
+  "description": "The Beat Machine webapp",
+  "main": "elm.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "elm-test",
+    "build": "webpack --mode production",
+    "watch": "webpack --mode development --watch",
+    "dev": "webpack-dev-server --mode development --port 3000",
+    "errors": "webpack --mode development --display-error-details"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beat-machine/webapp-ex.git"
+  },
+  "author": "dhsavell",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/beat-machine/webapp-ex/issues"
+  },
+  "homepage": "https://github.com/beat-machine/webapp-ex#readme",
+  "dependencies": {
+    "elm-webpack-loader": "^6.0.1",
+    "file-loader": "^5.0.2",
+    "prettier": "^1.19.1",
+    "prettier-plugin-elm": "^0.5.0",
+    "prettier-webpack-plugin": "^1.2.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
+  }
+}
