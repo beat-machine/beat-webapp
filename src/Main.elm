@@ -1,11 +1,14 @@
-module Main exposing (Model, Msg, init, subscriptions, update, view)
+port module Main exposing (Model, Msg, init, subscriptions, update, updatePlayerSong, view)
 
 import Api
+import Base64
 import Browser
+import Bytes exposing (Bytes)
 import File exposing (File)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Http
 import Json.Decode as D
 
 
@@ -29,9 +32,8 @@ type InputSong
 
 type alias Model =
     { song : InputSong
-    , result : Maybe String
+    , error : Maybe String
     }
-
 
 
 -- UPDATE
@@ -40,7 +42,7 @@ type alias Model =
 type Msg
     = SetSongFile File
     | SendSong
-    | ApiMsg Api.Msg
+    | GotSong (Result Http.Error Bytes)
     | ClearSong
 
 
@@ -54,16 +56,27 @@ update msg model =
             case model.song of
                 None ->
                     ( model, Cmd.none )
-            
+
                 FromFile f ->
-                    ( model, Api.sendFile f "[]" |> Cmd.map ApiMsg )
+                    ( model, Api.sendFile f "[{\"type\": \"cut\", \"period\": 1}]" GotSong )
 
         ClearSong ->
-            ( { model | song = None }, Cmd.none )
+            ( { model | song = None, error = Nothing }, Cmd.none )
 
-        ApiMsg apiMsg -> 
-            ( model, Cmd.none )
-                
+        GotSong result ->
+            case result of
+                Err a ->
+                    ( { model | error = Just (Debug.toString a) }, Cmd.none )
+
+                Ok s ->
+                    case Base64.fromBytes s of
+                        Just d ->
+                            ( model, updatePlayerSong d )
+
+                        Nothing ->
+                            ( { model | error = Just "Couldn't decode song" }, Cmd.none )
+
+
 
 -- VIEW
 
@@ -91,7 +104,22 @@ view model =
             , value "Submit"
             ]
             []
-        , audio [ controls True ] []
+        , audio
+            [ id "player"
+            , controls True
+            ]
+            []
+        , a
+            [ id "download"
+            , download ""
+            ]
+            [ text "Download Result" ]
+        , case model.error of
+            Just e ->
+                p [] [ text e ]
+
+            Nothing ->
+                text ""
         , pre [] [ text (Debug.toString model) ]
         ]
 
@@ -113,7 +141,14 @@ subscriptions _ =
 init : () -> ( Model, Cmd Msg )
 init _ =
     ( { song = None
-      , result = Nothing
+      , error = Nothing
       }
     , Cmd.none
     )
+
+
+
+-- PORTS
+
+
+port updatePlayerSong : String -> Cmd msg
