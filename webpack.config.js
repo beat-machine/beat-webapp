@@ -13,6 +13,9 @@ module.exports = {
                 loader: 'elm-webpack-loader',
                 options: {}
             }
+        }, {
+            test: /\.css$/i,
+            use: ['style-loader', 'css-loader'],
         }]
     },
 

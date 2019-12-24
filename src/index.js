@@ -1,4 +1,5 @@
 require("./index.html");
+import css from "./style.css";
 
 const Elm = require("./Main.elm").Elm;
 const app = Elm.Main.init({
@@ -31,8 +32,8 @@ app.ports.updatePlayerSong.subscribe(function(data) {
     URL.revokeObjectURL(lastObjectUrl);
   }
 
-  blob = b64toBlob(data, "audio/mpeg");
-  url = URL.createObjectURL(blob);
+  let blob = b64toBlob(data, "audio/mpeg");
+  let url = URL.createObjectURL(blob);
   document.getElementById("player").src = url;
   document.getElementById("download").href = url;
   lastObjectUrl = url;

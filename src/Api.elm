@@ -1,7 +1,7 @@
-module Api exposing (Effects, sendFile)
+module Api exposing (sendFile)
 
-import File exposing (File)
 import Bytes exposing (Bytes)
+import File exposing (File)
 import Http exposing (filePart, multipartBody, post, stringPart)
 
 
@@ -10,11 +10,7 @@ baseUrl =
     "http://localhost:8001"
 
 
-type alias Effects =
-    String
-
-
-sendFile : File -> Effects -> ((Result Http.Error Bytes) -> msg) -> Cmd msg
+sendFile : File -> String -> (Result Http.Error Bytes -> msg) -> Cmd msg
 sendFile song effects toMsg =
     post
         { url = baseUrl
@@ -27,7 +23,7 @@ sendFile song effects toMsg =
         }
 
 
-expectSongBytes : ((Result Http.Error Bytes) -> msg) -> Http.Expect msg
+expectSongBytes : (Result Http.Error Bytes -> msg) -> Http.Expect msg
 expectSongBytes toMsg =
     Http.expectBytesResponse toMsg <|
         \response ->
