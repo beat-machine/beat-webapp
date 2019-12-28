@@ -11,6 +11,7 @@
   --disabled-text: #888;
 
   --accent: #fa840f;
+  --accent-hover: #cc6516;
   --error: #f23f35;
   --patron-gold: #fcf765;
 
@@ -160,6 +161,16 @@ input[type="button"] {
   border-color: var(--accent) !important;
   background-color: var(--accent) !important;
   color: var(--background) !important;
+}
+
+.button-primary:not([disabled]):hover {
+  border-color: var(--accent-hover) !important;
+  background-color: var(--accent-hover) !important;
+}
+
+button {
+  transition: background-color 0.1s ease-out, border-color 0.1s ease-out,
+    color 0.1s ease-out !important;
 }
 
 input[type="url"],

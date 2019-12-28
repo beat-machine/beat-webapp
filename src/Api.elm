@@ -1,41 +1,58 @@
-module Api exposing (sendFile, effectsToJsonString)
+module Api exposing (SongSource (..), sendSong)
 
 import Bytes exposing (Bytes)
 import Dict
 import EffectView
 import File exposing (File)
-import Http exposing (filePart, multipartBody, post, stringPart)
+import Http exposing (filePart, multipartBody, post, stringPart, jsonBody)
 import Json.Encode as Encode
 
+
+type SongSource
+    = FromFile File
+    | FromYoutubeUrl String
 
 baseUrl : String
 baseUrl =
     "http://localhost:8000"
 
 
-effectsToJsonString : List EffectView.EffectInstance -> String
-effectsToJsonString effects =
-    Encode.encode 0 <|
-        Encode.list Encode.object <|
-            List.map
-                (\e ->
-                    ( "type", Encode.string e.type_.id )
-                        :: (List.map (\( s, v ) -> ( s, Encode.int v )) <| Dict.toList e.values)
-                )
-                effects
+effectsToJsonArray : List EffectView.EffectInstance -> Encode.Value
+effectsToJsonArray effects =
+    Encode.list Encode.object <|
+        List.map
+            (\e ->
+                ( "type", Encode.string e.type_.id )
+                    :: (List.map (\( s, v ) -> ( s, Encode.int v )) <| Dict.toList (e.type_.postValidation e.values))
+            )
+            effects
 
 
-sendFile : File -> String -> (Result Http.Error Bytes -> msg) -> Cmd msg
-sendFile song effects toMsg =
-    post
-        { url = baseUrl
-        , body =
-            multipartBody
-                [ filePart "song" song
-                , stringPart "effects" effects
-                ]
-        , expect = expectSongBytes toMsg
-        }
+sendSong : SongSource -> List EffectView.EffectInstance -> (Result Http.Error Bytes -> msg) -> Cmd msg
+sendSong song effects toMsg =
+    let
+        endpoint = case song of
+            FromFile _ ->
+                baseUrl
+            FromYoutubeUrl _ ->
+                baseUrl ++ "/yt"
+
+        body = case song of
+            FromFile f ->
+                multipartBody
+                    [ filePart "song" f
+                    , stringPart "effects" (Encode.encode 0 <| effectsToJsonArray effects)
+                    ]
+        
+            FromYoutubeUrl u ->
+                jsonBody (Encode.object [ ( "youtube_url", Encode.string u ), ( "effects", effectsToJsonArray effects ), ( "settings", Encode.object [] )])
+        
+    in            
+        post
+            { url = endpoint
+            , body = body
+            , expect = expectSongBytes toMsg
+            }
 
 
 expectSongBytes : (Result Http.Error Bytes -> msg) -> Http.Expect msg

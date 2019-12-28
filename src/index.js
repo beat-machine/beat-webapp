@@ -38,3 +38,15 @@ app.ports.updatePlayerSong.subscribe(function(data) {
   document.getElementById("download").href = url;
   lastObjectUrl = url;
 });
+
+app.ports.clearPlayerSong.subscribe(function(data) {
+  if (lastObjectUrl) {
+    URL.revokeObjectURL(lastObjectUrl);
+    lastObjectUrl = null;
+  }
+
+  let audioPlayer = document.getElementById("player");
+  audioPlayer.pause();
+  audioPlayer.removeAttribute("src");
+  document.getElementById("download").removeAttribute("href");
+});

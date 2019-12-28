@@ -29,12 +29,6 @@ main =
 -- MODEL
 
 
-type InputSong
-    = FromFile File
-    | FromUrl String
-    | None
-
-
 type InputMode
     = File
     | Url
@@ -53,7 +47,7 @@ type ProcessingState
 
 
 type alias Model =
-    { song : InputSong
+    { song : Maybe Api.SongSource
     , settings : CustomSettings
     , inputMode : InputMode
     , effects : EffectView.EffectCollection
@@ -67,6 +61,7 @@ type alias Model =
 
 type Msg
     = ChangeInputMode InputMode
+    | SetSongUrl String
     | SetSongFile File
     | SendSong
     | GotSong (Result Http.Error Bytes)
@@ -81,19 +76,21 @@ update msg model =
         ChangeInputMode m ->
             ( { model | inputMode = m }, Cmd.none )
 
+        SetSongUrl u ->
+            ( { model | song = Just <| Api.FromYoutubeUrl u }, Cmd.none )
+
         SetSongFile f ->
-            ( { model | song = FromFile f }, Cmd.none )
+            ( { model | song = Just <| Api.FromFile f }, Cmd.none )
 
         SendSong ->
             case model.song of
-                None ->
+                Nothing ->
                     ( model, Cmd.none )
 
-                FromFile f ->
-                    ( { model | processing = InProgress }, Api.sendFile f (Api.effectsToJsonString model.effects) GotSong )
-
-                FromUrl _ ->
-                    ( model, Cmd.none )
+                Just s ->
+                    ( { model | processing = InProgress }
+                    , Cmd.batch [ clearPlayerSong (), Api.sendSong s model.effects GotSong ]
+                    )
 
         ToggleCustomSettings ->
             ( { model
@@ -140,9 +137,9 @@ view model =
         [ section []
             [ h1 [ class "one-word-per-line" ] [ text "The Beat Machine" ]
             , h3 [ class "tagline" ] [ text "funny tagline" ]
-            , p [] [ text "Ever wondered what your favorite song sounds like with every other beat missing? No? Well, either way, now you can find out!" ]
+            , p [] [ text "Ever wondered what your favorite song sounds like with every other beat missing? No? Well, either way, now you can find out! The Beat Machine is a webapp for making beat edits to songs." ]
             ]
-        , section []
+        , section [ class "frame" ]
             [ h3 [] [ text "Song" ]
             , p [] [ text "Choose and configure a song. Shorter songs process faster!" ]
             , div [ class "row" ]
@@ -186,14 +183,17 @@ view model =
                         Url ->
                             div []
                                 [ label [] [ text "Paste YouTube video URL" ]
-                                , input [ type_ "url", class "u-full-width" ] []
+                                , input
+                                    [ type_ "url"
+                                    , class "u-full-width"
+                                    , onInput SetSongUrl
+                                    ]
+                                    []
                                 ]
                     ]
                 ]
-            ]
-        , section []
-            [ h5 [] [ text "Settings" ]
-            , p [] [ text "The following settings are optional, but let you fine-tune the result if it's not what you expected." ]
+            , br [] []
+            , p [] [ text "The following settings are optional, but let you fine-tune the result if it's not what you expected. When using live performances or songs with tempo changes, be sure to set a high enough tolerance." ]
             , div [ class "row" ]
                 [ div [ class "four", class "columns" ]
                     [ label []
@@ -209,30 +209,28 @@ view model =
                     ]
                 , div [ class "four", class "columns" ]
                     [ label [] [ text "Estimated BPM" ]
-                    , input [ type_ "number", value "120", class "u-full-width", disabled (model.settings == Disabled) ] []
+                    , input [ type_ "number", value "120", Html.Attributes.min 10, Html.Attributes.max 500, class "u-full-width", disabled (model.settings == Disabled) ] []
                     ]
                 , div [ class "four", class "columns" ]
-                    [ label [] [ text "Max BPM Drift" ]
-                    , input [ type_ "number", value "10", class "u-full-width", disabled (model.settings == Disabled) ] []
+                    [ label [] [ text "Tolerance" ]
+                    , input [ type_ "number", value "10", Html.Attributes.min 3, Html.Attributes.max 500, class "u-full-width", disabled (model.settings == Disabled) ] []
                     ]
                 ]
             ]
-        , section []
+        , section [ class "frame" ]
             [ h3 [] [ text "Effects" ]
             , p [] [ text "Add up to 5 effects to rearrange your song." ]
             , Html.map EffectMsg (EffectView.viewAllEffects model.effects)
             ]
-        , section []
+        , section [ class "frame" ]
             [ h3 [] [ text "Result" ]
             , p [] [ text "Press submit to render the result!" ]
-            , input
-                [ type_ "button"
-                , disabled (model.song == None || model.processing == InProgress || List.length model.effects <= 0)
+            , button
+                [ disabled (model.song == Nothing || model.processing == InProgress || List.length model.effects <= 0)
                 , onClick SendSong
-                , value "Render!"
                 , class "button-primary"
                 ]
-                []
+                [ text "Render!" ]
             , case model.processing of
                 InProgress ->
                     p [] [ text "Processing..." ]
@@ -280,7 +278,7 @@ subscriptions _ =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { song = None
+    ( { song = Nothing
       , inputMode = File
       , settings = Disabled
       , effects =
@@ -294,6 +292,9 @@ init _ =
 
 
 -- PORTS
+
+
+port clearPlayerSong : () -> Cmd msg
 
 
 port updatePlayerSong : String -> Cmd msg

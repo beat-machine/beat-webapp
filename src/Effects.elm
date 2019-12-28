@@ -20,6 +20,7 @@ type alias EffectType =
     , id : String
     , params : List ParamInfo
     , extraValidation : List (Validator String (Dict String Int))
+    , postValidation : (Dict String Int) -> (Dict String Int)
     }
 
 
@@ -69,7 +70,7 @@ defaultValues e =
 
 all : List EffectType
 all =
-    [ swap, randomize, remove, cut, repeat, silence ]
+    [ swap, randomize, remove, cut, repeat, silence, reverse ]
 
 
 swap : EffectType
@@ -82,6 +83,7 @@ swap =
         , { id = "y_period", name = "With", hint = Nothing, min = 1, default = 4, max = 1000 }
         ]
     , extraValidation = [ Validate.ifTrue (\m -> Dict.get "x_period" m == Dict.get "y_period" m) "Can't swap a beat with itself! Try changing one of the values below." ]
+    , postValidation = identity
     }
 
 
@@ -92,6 +94,7 @@ randomize =
     , description = "Totally randomize all beats."
     , params = []
     , extraValidation = []
+    , postValidation = identity
     }
 
 
@@ -104,6 +107,7 @@ remove =
         [ { id = "period", name = "Every", hint = Nothing, min = 2, default = 2, max = 1000 }
         ]
     , extraValidation = []
+    , postValidation = identity
     }
 
 
@@ -118,6 +122,7 @@ cut =
         , { id = "take_index", name = "Piece to Keep", hint = Nothing, min = 1, default = 1, max = 1000 }
         ]
     , extraValidation = [ Validate.ifTrue (\m -> (Maybe.withDefault 0 <| Dict.get "take_index" m) > (Maybe.withDefault 0 <| Dict.get "denominator" m)) "Each beat isn't being cut into enough pieces to take that one. Try increasing the number of pieces." ]
+    , postValidation = Dict.update "take_index" (Maybe.map (\i -> i - 1))
     }
 
 
@@ -131,6 +136,7 @@ repeat =
         , { id = "times", name = "Times", hint = Nothing, min = 1, default = 2, max = 1000 }
         ]
     , extraValidation = []
+    , postValidation = identity
     }
 
 
@@ -143,6 +149,7 @@ silence =
         [ { id = "period", name = "Every", hint = Nothing, min = 2, default = 2, max = 1000 }
         ]
     , extraValidation = []
+    , postValidation = identity
     }
 
 
@@ -155,4 +162,5 @@ reverse =
         [ { id = "period", name = "Every", hint = Nothing, min = 1, default = 2, max = 1000 }
         ]
     , extraValidation = []
+    , postValidation = identity
     }
