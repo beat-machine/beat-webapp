@@ -80,6 +80,7 @@ h6 {
   font-weight: 500;
   user-select: none;
   font-size: 2rem;
+  font-style: italic;
 }
 
 .app {
@@ -111,6 +112,7 @@ section {
 audio {
   display: block;
   width: 100%;
+  margin-bottom: 2.5rem;
 }
 
 .hint {
@@ -131,7 +133,15 @@ audio {
   text-align: center;
 }
 
-.tier-6,
+.render-button-container {
+  text-align: center;
+}
+
+section:last-child {
+  margin-bottom: 1rem;
+}
+
+.tier-6 h5,
 .tier-6 a {
   color: var(--patron-gold);
 }
@@ -143,7 +153,7 @@ audio {
 input[type="url"],
 input[type="number"],
 select {
-  font-family: "Source Code Pro", sans-serif;
+  font-family: "Source Code Pro", monospace;
   font-weight: 800;
 }
 
@@ -153,7 +163,7 @@ input[type="button"] {
   background-color: var(--background);
   border-color: var(--frames);
   color: var(--text);
-  font-family: "Source Code Pro", sans-serif;
+  font-family: "Source Code Pro", monospace;
   font-weight: 800;
 }
 
@@ -198,4 +208,72 @@ button:disabled {
 label {
   user-select: none;
   color: var(--text);
+}
+
+.status {
+  color: var(--text);
+  text-align: center;
+}
+
+/* Loading animation */
+
+.loader {
+  text-align: center;
+  margin-bottom: 2.5rem; /* same as p */
+}
+
+.loader > div {
+  background-color: var(--frames);
+  height: 100%;
+  display: inline-block;
+  width: 10px;
+  height: 60px;
+  margin-right: 6px;
+  animation: loading-animation 2s infinite ease-out;
+}
+
+.loader > #r1 {
+  background-color: var(--accent);
+}
+
+.loader > #r2 {
+  background-color: var(--accent-1);
+  animation-delay: -0.5s;
+}
+
+.loader > #r3 {
+  background-color: var(--accent-4);
+  animation-delay: -1s;
+}
+
+.loader > #r4 {
+  background-color: var(--accent-2);
+  animation-delay: -1.5s;
+}
+
+@keyframes loading-animation {
+  0%,
+  20%,
+  100% {
+    transform: scaleY(1);
+    background-color: var(--accent);
+  }
+
+  25%,
+  45% {
+    transform: scaleY(0.4);
+    background-color: var(--accent-1);
+  }
+
+  50%,
+  70% {
+    transform: scaleY(1) scaleX(0.5);
+    background-color: var(--accent-4);
+  }
+
+  75%,
+  95% {
+    transform: scaleY(0.4) scaleX(1);
+    background-color: var(--accent-2);
+  }
 }

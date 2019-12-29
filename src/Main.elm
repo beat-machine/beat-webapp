@@ -13,6 +13,15 @@ import Html.Events exposing (..)
 import Http
 import Json.Decode as D
 import Patrons
+import Taglines
+import Random
+
+
+taglineGenerator : Random.Generator Int
+taglineGenerator = Random.int 0 <| List.length Taglines.all
+
+selectNewTagline : Cmd Msg
+selectNewTagline = Random.generate (\i -> ChangeTagline <| Maybe.withDefault "???" <| (Taglines.all |> List.drop (i - 1) |> List.head)) taglineGenerator
 
 
 main : Program () Model Msg
@@ -52,6 +61,7 @@ type alias Model =
     , inputMode : InputMode
     , effects : EffectView.EffectCollection
     , processing : ProcessingState
+    , tagline : String
     }
 
 
@@ -68,6 +78,8 @@ type Msg
     | EffectMsg EffectView.Msg
     | ToggleCustomSettings
     | NoOp
+    | ChangeTagline String
+    | RandomizeTagline
 
 
 canSubmit : List Effects.EffectInstance -> Bool
@@ -83,6 +95,11 @@ canSubmit effects =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        RandomizeTagline ->
+            ( model, selectNewTagline)
+        ChangeTagline s ->
+            ( { model | tagline = s}, Cmd.none)
+
         ChangeInputMode m ->
             ( { model | inputMode = m }, Cmd.none )
 
@@ -152,7 +169,7 @@ view model =
         ]
         [ section []
             [ h1 [ class "one-word-per-line" ] [ text "The Beat Machine" ]
-            , h3 [ class "tagline" ] [ text "funny tagline" ]
+            , h3 [ class "tagline", onClick RandomizeTagline ] [ text model.tagline ]
             , p [] [ text "Ever wondered what your favorite song sounds like with every other beat missing? No? Well, either way, now you can find out! The Beat Machine is a webapp for making beat edits to songs." ]
             ]
         , section [ class "frame" ]
@@ -205,6 +222,7 @@ view model =
                                     , onInput SetSongUrl
                                     ]
                                     []
+                                , p [] [ text "Not all videos can be downloaded. If you run into weird issues (i.e. empty audio after rendering), try using an MP3 instead."]
                                 ]
                     ]
                 ]
@@ -235,24 +253,40 @@ view model =
             ]
         , section [ class "frame" ]
             [ h3 [] [ text "Effects" ]
-            , p [] [ text "Add up to 5 effects to rearrange your song." ]
+            , p [] [ text "Add up to 5 sequential effects to rearrange your song." ]
             , Html.map EffectMsg (EffectView.viewAllEffects model.effects)
+            ]
+        , section []
+            [ h3 [] [ text "Support" ]
+            , p [] [ text "Continued development of The Beat Machine is made possible by supporters on Patreon!" ]
+            , div [ class "patrons" ] (List.map (\p -> Html.map (\_ -> NoOp) (Patrons.viewPatron p)) Patrons.all)
+            , p [] [ text "If you'd like to have your name and links on this page, consider making a pledge." ]
             ]
         , section [ class "frame" ]
             [ h3 [] [ text "Result" ]
-            , p [] [ text "Press submit to render the result!" ]
-            , button
+            , p [] [ text "Press the button to render the result! This will take a moment." ]
+            , div [ class "render-button-container" ] [ button
                 [ disabled (model.song == Nothing || model.processing == InProgress || List.length model.effects <= 0 || not (canSubmit model.effects))
                 , onClick SendSong
                 , class "button-primary"
+                , class "render-button"
                 ]
                 [ text "Render!" ]
+            ]
             , case model.processing of
                 InProgress ->
-                    p [] [ text "Processing..." ]
+                    div []
+                        [ p [ class "status" ] [ text "Hold on..." ]
+                        , div [ class "loader" ]
+                            [ div [ id "r1" ] []
+                            , div [ id "r2" ] []
+                            , div [ id "r3" ] []
+                            , div [ id "r4" ] []
+                            ]
+                        ]
 
                 Failed errorMsg ->
-                    p [] [ text ("An error occurred (" ++ errorMsg ++ "). ") ]
+                    p [ class "status", class "error" ] [ text ("An error occurred (" ++ errorMsg ++ "). ") ]
 
                 _ ->
                     text ""
@@ -262,18 +296,16 @@ view model =
                 , classList [ ( "hidden", model.processing /= Succeeded ) ]
                 ]
                 []
-            , a
-                [ id "download"
-                , download ""
-                , classList [ ( "hidden", model.processing /= Succeeded ) ]
+            , p [ classList [ ( "hidden", model.processing /= Succeeded ) ] ]
+                [ text "Right-click on the player above or "
+                , a
+                    [ id "download"
+                    , download ""
+                    , href "test"
+                    ]
+                    [ text "use this link" ]
+                , text " to download the result."
                 ]
-                [ text "Download Result" ]
-            ]
-        , section []
-            [ h3 [] [ text "Support" ]
-            , p [] [ text "Continued development of The Beat Machine is made possible by supporters on Patreon!" ]
-            , div [ class "patrons" ] (List.map (\p -> Html.map (\_ -> NoOp) (Patrons.viewPatron p)) Patrons.all)
-            , p [] [ text "If you'd like to have your name and links on this page, consider making a pledge." ]
             ]
         ]
 
@@ -301,8 +333,9 @@ init _ =
             [ { type_ = Effects.swap, values = Effects.defaultValues Effects.swap }
             ]
       , processing = NotStarted
+      , tagline = ""
       }
-    , Cmd.none
+    , selectNewTagline
     )
 
 
