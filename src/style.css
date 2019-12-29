@@ -110,9 +110,9 @@ section {
 }
 
 audio {
+  margin-top: 1.5rem;
   display: block;
   width: 100%;
-  margin-bottom: 2.5rem;
 }
 
 .hint {
@@ -135,9 +135,6 @@ audio {
 
 .render-button-container {
   text-align: center;
-}
-
-section:last-child {
   margin-bottom: 1rem;
 }
 
@@ -176,6 +173,11 @@ input[type="button"] {
 .button-primary:not([disabled]):hover {
   border-color: var(--accent-hover) !important;
   background-color: var(--accent-hover) !important;
+}
+
+.audio-hint {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 
 button {

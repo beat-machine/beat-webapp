@@ -13,15 +13,18 @@ import Html.Events exposing (..)
 import Http
 import Json.Decode as D
 import Patrons
-import Taglines
 import Random
+import Taglines
 
 
 taglineGenerator : Random.Generator Int
-taglineGenerator = Random.int 0 <| List.length Taglines.all
+taglineGenerator =
+    Random.int 0 <| List.length Taglines.all
+
 
 selectNewTagline : Cmd Msg
-selectNewTagline = Random.generate (\i -> ChangeTagline <| Maybe.withDefault "???" <| (Taglines.all |> List.drop (i - 1) |> List.head)) taglineGenerator
+selectNewTagline =
+    Random.generate (\i -> ChangeTagline <| Maybe.withDefault "???" <| (Taglines.all |> List.drop (i - 1) |> List.head)) taglineGenerator
 
 
 main : Program () Model Msg
@@ -43,11 +46,6 @@ type InputMode
     | Url
 
 
-type CustomSettings
-    = Disabled
-    | EstimatedBpm Int Int
-
-
 type ProcessingState
     = Succeeded
     | Failed String
@@ -57,7 +55,7 @@ type ProcessingState
 
 type alias Model =
     { song : Maybe Api.SongSource
-    , settings : CustomSettings
+    , settings : Maybe Api.ProcessingSettings
     , inputMode : InputMode
     , effects : EffectView.EffectCollection
     , processing : ProcessingState
@@ -77,6 +75,8 @@ type Msg
     | GotSong (Result Http.Error Bytes)
     | EffectMsg EffectView.Msg
     | ToggleCustomSettings
+    | UpdateBpmEstimate Int
+    | UpdateTolerance Int
     | NoOp
     | ChangeTagline String
     | RandomizeTagline
@@ -96,9 +96,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         RandomizeTagline ->
-            ( model, selectNewTagline)
+            ( model, selectNewTagline )
+
         ChangeTagline s ->
-            ( { model | tagline = s}, Cmd.none)
+            ( { model | tagline = s }, Cmd.none )
 
         ChangeInputMode m ->
             ( { model | inputMode = m }, Cmd.none )
@@ -118,21 +119,21 @@ update msg model =
 
                         Just s ->
                             ( { model | processing = InProgress }
-                            , Cmd.batch [ clearPlayerSong (), Api.sendSong s validEffects GotSong ]
+                            , Cmd.batch [ clearPlayerSong (), Api.sendSong s model.settings validEffects GotSong ]
                             )
 
                 Err _ ->
-                    -- TODO: List errors
                     ( model, Cmd.none )
 
         ToggleCustomSettings ->
             ( { model
                 | settings =
-                    if model.settings == Disabled then
-                        EstimatedBpm 120 10
+                    case model.settings of
+                        Just _ ->
+                            Nothing
 
-                    else
-                        Disabled
+                        Nothing ->
+                            Just { estimatedBpm = 120, tolerance = 10 }
               }
             , Cmd.none
             )
@@ -152,6 +153,22 @@ update msg model =
 
                         Nothing ->
                             ( { model | processing = Failed "Couldn't decode song" }, Cmd.none )
+
+        UpdateBpmEstimate i ->
+            case model.settings of
+                Just s ->
+                    ( { model | settings = Just { s | estimatedBpm = i } }, Cmd.none )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+        UpdateTolerance i ->
+            case model.settings of
+                Just s ->
+                    ( { model | settings = Just { s | tolerance = i } }, Cmd.none )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
         NoOp ->
             ( model, Cmd.none )
@@ -222,7 +239,7 @@ view model =
                                     , onInput SetSongUrl
                                     ]
                                     []
-                                , p [] [ text "Not all videos can be downloaded. If you run into weird issues (i.e. empty audio after rendering), try using an MP3 instead."]
+                                , p [] [ text "Not all videos can be downloaded. If you run into weird issues (i.e. empty audio after rendering), try using an MP3 instead." ]
                                 ]
                     ]
                 ]
@@ -235,7 +252,7 @@ view model =
                             [ type_ "checkbox"
                             , name "use-bpm"
                             , onClick ToggleCustomSettings
-                            , checked (model.settings /= Disabled)
+                            , checked (model.settings /= Nothing)
                             ]
                             []
                         , span [ class "label-body" ] [ text "Set tempo manually" ]
@@ -243,11 +260,43 @@ view model =
                     ]
                 , div [ class "four", class "columns" ]
                     [ label [] [ text "Estimated BPM" ]
-                    , input [ type_ "number", value "120", Html.Attributes.min "10", Html.Attributes.max "500", class "u-full-width", disabled (model.settings == Disabled) ] []
+                    , input
+                        [ type_ "number"
+                        , value
+                            (case model.settings of
+                                Just settings ->
+                                    String.fromInt settings.estimatedBpm
+
+                                Nothing ->
+                                    ""
+                            )
+                        , onInput (String.toInt >> Maybe.withDefault 10 >> UpdateBpmEstimate)
+                        , Html.Attributes.min "10"
+                        , Html.Attributes.max "500"
+                        , class "u-full-width"
+                        , disabled (model.settings == Nothing)
+                        ]
+                        []
                     ]
                 , div [ class "four", class "columns" ]
                     [ label [] [ text "Tolerance" ]
-                    , input [ type_ "number", value "10", Html.Attributes.min "3", Html.Attributes.max "500", class "u-full-width", disabled (model.settings == Disabled) ] []
+                    , input
+                        [ type_ "number"
+                        , value
+                            (case model.settings of
+                                Just settings ->
+                                    String.fromInt settings.tolerance
+
+                                Nothing ->
+                                    ""
+                            )
+                        , onInput (String.toInt >> Maybe.withDefault 3 >> UpdateTolerance)
+                        , Html.Attributes.min "3"
+                        , Html.Attributes.max "500"
+                        , class "u-full-width"
+                        , disabled (model.settings == Nothing)
+                        ]
+                        []
                     ]
                 ]
             ]
@@ -265,18 +314,19 @@ view model =
         , section [ class "frame" ]
             [ h3 [] [ text "Result" ]
             , p [] [ text "Press the button to render the result! This will take a moment." ]
-            , div [ class "render-button-container" ] [ button
-                [ disabled (model.song == Nothing || model.processing == InProgress || List.length model.effects <= 0 || not (canSubmit model.effects))
-                , onClick SendSong
-                , class "button-primary"
-                , class "render-button"
+            , div [ class "render-button-container" ]
+                [ button
+                    [ disabled (model.song == Nothing || model.processing == InProgress || List.length model.effects <= 0 || not (canSubmit model.effects))
+                    , onClick SendSong
+                    , class "button-primary"
+                    , class "render-button"
+                    ]
+                    [ text "Render!" ]
                 ]
-                [ text "Render!" ]
-            ]
             , case model.processing of
                 InProgress ->
                     div []
-                        [ p [ class "status" ] [ text "Hold on..." ]
+                        [ p [ class "status" ] [ text "Working on it..." ]
                         , div [ class "loader" ]
                             [ div [ id "r1" ] []
                             , div [ id "r2" ] []
@@ -296,7 +346,7 @@ view model =
                 , classList [ ( "hidden", model.processing /= Succeeded ) ]
                 ]
                 []
-            , p [ classList [ ( "hidden", model.processing /= Succeeded ) ] ]
+            , p [ classList [ ( "hidden", model.processing /= Succeeded ) ], class "audio-hint" ]
                 [ text "Right-click on the player above or "
                 , a
                     [ id "download"
@@ -328,7 +378,7 @@ init : () -> ( Model, Cmd Msg )
 init _ =
     ( { song = Nothing
       , inputMode = File
-      , settings = Disabled
+      , settings = Nothing
       , effects =
             [ { type_ = Effects.swap, values = Effects.defaultValues Effects.swap }
             ]
