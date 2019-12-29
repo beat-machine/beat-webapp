@@ -1,4 +1,4 @@
-module EffectView exposing (EffectCollection, EffectInstance, Msg, update, validateInstance, viewAllEffects)
+module EffectView exposing (EffectCollection, Msg, update, validateInstance, viewAllEffects)
 
 import Dict
 import Effects
@@ -9,14 +9,8 @@ import Json.Decode as D
 import Validate
 
 
-type alias EffectInstance =
-    { type_ : Effects.EffectType
-    , values : Dict.Dict String Int
-    }
-
-
 type alias EffectCollection =
-    List EffectInstance
+    List Effects.EffectInstance
 
 
 type Msg
@@ -26,9 +20,9 @@ type Msg
     | RemoveEffect
 
 
-validateInstance : EffectInstance -> Result (List String) (Validate.Valid (Dict.Dict String Int))
+validateInstance : Effects.EffectInstance -> Result (List String) (Validate.Valid Effects.EffectInstance)
 validateInstance effect =
-    Validate.validate (Effects.effectValidator effect.type_) effect.values
+    Validate.validate (Effects.effectValidator effect.type_) effect
 
 
 mapAt : Int -> (a -> a) -> List a -> List a
@@ -91,7 +85,7 @@ viewEffectSelector effectIdx types =
     select [ class "effect-type", class "u-full-width", onInput (SetType effectIdx << effectFromId) ] (List.map (\t -> option [ value t.id ] [ text t.name ]) types)
 
 
-viewEffect : Int -> EffectInstance -> Html Msg
+viewEffect : Int -> Effects.EffectInstance -> Html Msg
 viewEffect effectIdx effect =
     let
         validation =

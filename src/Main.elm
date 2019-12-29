@@ -70,6 +70,16 @@ type Msg
     | NoOp
 
 
+canSubmit : List Effects.EffectInstance -> Bool
+canSubmit effects =
+    case Effects.validateAll effects of
+        Ok _ ->
+            True
+
+        _ ->
+            False
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -83,14 +93,20 @@ update msg model =
             ( { model | song = Just <| Api.FromFile f }, Cmd.none )
 
         SendSong ->
-            case model.song of
-                Nothing ->
-                    ( model, Cmd.none )
+            case Effects.validateAll model.effects of
+                Ok validEffects ->
+                    case model.song of
+                        Nothing ->
+                            ( model, Cmd.none )
 
-                Just s ->
-                    ( { model | processing = InProgress }
-                    , Cmd.batch [ clearPlayerSong (), Api.sendSong s model.effects GotSong ]
-                    )
+                        Just s ->
+                            ( { model | processing = InProgress }
+                            , Cmd.batch [ clearPlayerSong (), Api.sendSong s validEffects GotSong ]
+                            )
+
+                Err _ ->
+                    -- TODO: List errors
+                    ( model, Cmd.none )
 
         ToggleCustomSettings ->
             ( { model
@@ -209,11 +225,11 @@ view model =
                     ]
                 , div [ class "four", class "columns" ]
                     [ label [] [ text "Estimated BPM" ]
-                    , input [ type_ "number", value "120", Html.Attributes.min 10, Html.Attributes.max 500, class "u-full-width", disabled (model.settings == Disabled) ] []
+                    , input [ type_ "number", value "120", Html.Attributes.min "10", Html.Attributes.max "500", class "u-full-width", disabled (model.settings == Disabled) ] []
                     ]
                 , div [ class "four", class "columns" ]
                     [ label [] [ text "Tolerance" ]
-                    , input [ type_ "number", value "10", Html.Attributes.min 3, Html.Attributes.max 500, class "u-full-width", disabled (model.settings == Disabled) ] []
+                    , input [ type_ "number", value "10", Html.Attributes.min "3", Html.Attributes.max "500", class "u-full-width", disabled (model.settings == Disabled) ] []
                     ]
                 ]
             ]
@@ -226,7 +242,7 @@ view model =
             [ h3 [] [ text "Result" ]
             , p [] [ text "Press submit to render the result!" ]
             , button
-                [ disabled (model.song == Nothing || model.processing == InProgress || List.length model.effects <= 0)
+                [ disabled (model.song == Nothing || model.processing == InProgress || List.length model.effects <= 0 || not (canSubmit model.effects))
                 , onClick SendSong
                 , class "button-primary"
                 ]

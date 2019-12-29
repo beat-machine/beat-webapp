@@ -2,10 +2,11 @@ module Api exposing (SongSource (..), sendSong)
 
 import Bytes exposing (Bytes)
 import Dict
-import EffectView
+import Effects
 import File exposing (File)
 import Http exposing (filePart, multipartBody, post, stringPart, jsonBody)
 import Json.Encode as Encode
+import Validate
 
 
 type SongSource
@@ -17,7 +18,7 @@ baseUrl =
     "http://localhost:8000"
 
 
-effectsToJsonArray : List EffectView.EffectInstance -> Encode.Value
+effectsToJsonArray : List Effects.EffectInstance -> Encode.Value
 effectsToJsonArray effects =
     Encode.list Encode.object <|
         List.map
@@ -28,9 +29,10 @@ effectsToJsonArray effects =
             effects
 
 
-sendSong : SongSource -> List EffectView.EffectInstance -> (Result Http.Error Bytes -> msg) -> Cmd msg
-sendSong song effects toMsg =
+sendSong : SongSource -> List (Validate.Valid Effects.EffectInstance) -> (Result Http.Error Bytes -> msg) -> Cmd msg
+sendSong song validEffects toMsg =
     let
+        effects = List.map Validate.fromValid validEffects
         endpoint = case song of
             FromFile _ ->
                 baseUrl

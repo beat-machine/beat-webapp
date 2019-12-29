@@ -1,4 +1,4 @@
-module Effects exposing (EffectType, ParamInfo, all, defaultValues, effectValidator, randomize, swap)
+module Effects exposing (EffectInstance, EffectType, ParamInfo, all, defaultValues, effectValidator, validateAll, randomize, swap)
 
 import Dict exposing (Dict)
 import Validate exposing (Validator)
@@ -20,21 +20,27 @@ type alias EffectType =
     , id : String
     , params : List ParamInfo
     , extraValidation : List (Validator String (Dict String Int))
-    , postValidation : (Dict String Int) -> (Dict String Int)
+    , postValidation : Dict String Int -> Dict String Int
     }
 
 
-effectValidator : EffectType -> Validator String (Dict String Int)
+type alias EffectInstance =
+    { type_ : EffectType
+    , values : Dict.Dict String Int
+    }
+
+
+effectValidator : EffectType -> Validator String EffectInstance
 effectValidator e =
     Validate.all
         -- Check that all fields are present.
-        (List.map (\p -> Validate.ifNothing (\d -> Dict.get p d) "Missing field") (List.map .id e.params)
+        (List.map (\p -> Validate.ifNothing (\d -> Dict.get p d.values) "Missing field") (List.map .id e.params)
             -- Check that all values are in the appropriate range.
             ++ List.map
                 (\p ->
                     Validate.ifTrue
                         (\d ->
-                            case Dict.get p.id d of
+                            case Dict.get p.id d.values of
                                 Just i ->
                                     i < p.min
 
@@ -48,7 +54,7 @@ effectValidator e =
                 (\p ->
                     Validate.ifTrue
                         (\d ->
-                            case Dict.get p.id d of
+                            case Dict.get p.id d.values of
                                 Just i ->
                                     i > p.max
 
@@ -59,8 +65,54 @@ effectValidator e =
                 )
                 e.params
             -- Apply any extra validation.
-            ++ e.extraValidation
+            ++ [ Validate.fromErrors
+                    (\a ->
+                        case Validate.validate (Validate.all e.extraValidation) a.values of
+                            Ok _ ->
+                                []
+
+                            Err errs ->
+                                errs
+                    )
+               ]
         )
+
+
+validateAll : List EffectInstance -> Result (List (List String)) (List (Validate.Valid EffectInstance))
+validateAll effects =
+    let
+        result =
+            List.map (\e -> Validate.validate (effectValidator e.type_) e) effects
+
+        oks =
+            List.filterMap
+                (\r ->
+                    case r of
+                        Ok v ->
+                            Just v
+
+                        _ ->
+                            Nothing
+                )
+                result
+
+        errs =
+            List.filterMap
+                (\r ->
+                    case r of
+                        Err e ->
+                            Just e
+
+                        _ ->
+                            Nothing
+                )
+                result
+    in
+    if List.length oks == List.length effects then
+        Ok oks
+
+    else
+        Err errs
 
 
 defaultValues : EffectType -> Dict String Int
