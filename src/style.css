@@ -1,0 +1,277 @@
+@import "~skeleton-css/css/skeleton.css";
+@import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700|Source+Sans+Pro&display=swap");
+
+:root {
+  color-scheme: light dark;
+
+  --frames: #aaaab2;
+  --background: #121219;
+  --inset-background: #101014;
+  --text: #f2f2fa;
+  --disabled-text: #888;
+
+  --accent: #fa840f;
+  --accent-hover: #cc6516;
+  --error: #f23f35;
+  --patron-gold: #fcf765;
+
+  --accent-1: #faeb2c;
+  --accent-2: #f52789;
+  --accent-3: #e900ff;
+  --accent-4: #1685f8;
+
+  --background-pattern: linear-gradient(to right, #1a1a20 1px, transparent 1px),
+    linear-gradient(to bottom, #1a1a20 1px, transparent 1px);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #fff;
+    --frames: #223;
+
+    --text: #223;
+    --disabled-text: #666;
+    --text: #111;
+
+    --patron-gold: #d1a104;
+
+    --accent-1: #fa772c;
+    --accent-2: #f52789;
+    --accent-3: #e900ff;
+    --accent-4: #1685f8;
+
+    --background-pattern: linear-gradient(to right, #eef 1px, transparent 1px),
+      linear-gradient(to bottom, #eef 1px, transparent 1px);
+  }
+}
+
+body {
+  background-color: var(--background);
+  background-size: 20px 20px;
+  background-image: var(--background-pattern);
+  color: var(--frames);
+  font-family: "Source Code Pro", sans-serif;
+}
+
+.one-word-per-line {
+  font-size: 5rem;
+  word-spacing: 100vw;
+  user-select: none;
+  line-height: 92%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Source Code Pro", monospace;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.hidden {
+  display: none;
+}
+
+.tagline {
+  color: var(--text);
+  font-weight: 500;
+  user-select: none;
+  font-size: 2rem;
+  font-style: italic;
+}
+
+.app {
+  margin-top: 5%;
+}
+
+section {
+  margin-bottom: 40px;
+}
+
+@media (min-width: 550px) {
+  .frame {
+    background-color: var(--background);
+    border: 5px solid var(--frames);
+    padding: 20px;
+    box-shadow: 10px 10px var(--frames);
+  }
+
+  .frame.error {
+    border: 5px solid var(--error);
+    box-shadow: 10px 10px var(--error);
+  }
+}
+
+.effect-error {
+  color: var(--error);
+}
+
+audio {
+  margin-top: 1.5rem;
+  display: block;
+  width: 100%;
+}
+
+.hint {
+  display: block;
+}
+
+.effect {
+  margin: 10px;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.effect-controls button {
+  margin-right: 10px;
+}
+
+.patrons {
+  text-align: center;
+}
+
+.render-button-container {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.tier-6 h5,
+.tier-6 a {
+  color: var(--patron-gold);
+}
+
+.feather {
+  margin-left: 12px;
+}
+
+input[type="url"],
+input[type="number"],
+select {
+  font-family: "Source Code Pro", monospace;
+  font-weight: 800;
+}
+
+a.button,
+button,
+input[type="button"] {
+  background-color: var(--background);
+  border-color: var(--frames);
+  color: var(--text);
+  font-family: "Source Code Pro", monospace;
+  font-weight: 800;
+}
+
+.button-primary {
+  border-color: var(--accent) !important;
+  background-color: var(--accent) !important;
+  color: var(--background) !important;
+}
+
+.button-primary:not([disabled]):hover {
+  border-color: var(--accent-hover) !important;
+  background-color: var(--accent-hover) !important;
+}
+
+.audio-hint {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+button {
+  transition: background-color 0.1s ease-out, border-color 0.1s ease-out,
+    color 0.1s ease-out !important;
+}
+
+input[type="url"],
+input[type="number"] {
+  background-color: var(--background);
+  color: var(--text);
+}
+
+input:focus {
+  border-color: var(
+    --accent
+  ) !important; /* TODO: Copy skeleton.css and make these modifications there to avoid !important */
+}
+
+input,
+button {
+  transition: opacity 0.05s ease-out;
+}
+
+input:disabled,
+button:disabled {
+  opacity: 30%;
+}
+
+label {
+  user-select: none;
+  color: var(--text);
+}
+
+.status {
+  color: var(--text);
+  text-align: center;
+}
+
+/* Loading animation */
+
+.loader {
+  text-align: center;
+  margin-bottom: 2.5rem; /* same as p */
+}
+
+.loader > div {
+  background-color: var(--frames);
+  height: 100%;
+  display: inline-block;
+  width: 10px;
+  height: 60px;
+  margin-right: 6px;
+  animation: loading-animation 2s infinite ease-out;
+}
+
+.loader > #r1 {
+  background-color: var(--accent);
+}
+
+.loader > #r2 {
+  background-color: var(--accent-1);
+  animation-delay: -0.5s;
+}
+
+.loader > #r3 {
+  background-color: var(--accent-4);
+  animation-delay: -1s;
+}
+
+.loader > #r4 {
+  background-color: var(--accent-2);
+  animation-delay: -1.5s;
+}
+
+@keyframes loading-animation {
+  0%,
+  20%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  25%,
+  45% {
+    transform: scaleY(0.4);
+  }
+
+  50%,
+  70% {
+    transform: scaleY(1) scaleX(0.5);
+  }
+
+  75%,
+  95% {
+    transform: scaleY(0.4) scaleX(1);
+  }
+}
