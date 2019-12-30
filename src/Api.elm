@@ -19,12 +19,6 @@ type alias ProcessingSettings =
     , tolerance : Int
     }
 
-
-baseUrl : String
-baseUrl =
-    "http://localhost:8000"
-
-
 effectsToJsonArray : List Effects.EffectInstance -> Encode.Value
 effectsToJsonArray effects =
     Encode.list Encode.object <|
@@ -36,8 +30,8 @@ effectsToJsonArray effects =
             effects
 
 
-sendSong : SongSource -> Maybe ProcessingSettings -> List (Validate.Valid Effects.EffectInstance) -> (Result Http.Error Bytes -> msg) -> Cmd msg
-sendSong song settings validEffects toMsg =
+sendSong : String -> SongSource -> Maybe ProcessingSettings -> List (Validate.Valid Effects.EffectInstance) -> (Result String Bytes -> msg) -> Cmd msg
+sendSong baseUrl song settings validEffects toMsg =
     let
         effects =
             List.map Validate.fromValid validEffects
@@ -80,22 +74,22 @@ sendSong song settings validEffects toMsg =
         }
 
 
-expectSongBytes : (Result Http.Error Bytes -> msg) -> Http.Expect msg
+expectSongBytes : (Result String Bytes -> msg) -> Http.Expect msg
 expectSongBytes toMsg =
     Http.expectBytesResponse toMsg <|
         \response ->
             case response of
-                Http.BadUrl_ url ->
-                    Err (Http.BadUrl url)
+                Http.BadUrl_ _ ->
+                    Err "Failed to process server URL. This is a bug. If you have the time, please report it!"
 
                 Http.Timeout_ ->
-                    Err Http.Timeout
+                    Err "A timeout occurred while contacting the server. It may be down or under heavy load. Try again in a moment."
 
                 Http.NetworkError_ ->
-                    Err Http.NetworkError
+                    Err "A network error occurred. Make sure that your MP3 or YouTube link is valid."
 
                 Http.BadStatus_ metadata _ ->
-                    Err (Http.BadStatus metadata.statusCode)
+                    Err ("A network error occurred (" ++ String.fromInt metadata.statusCode ++ "). Make sure that your MP3 or YouTube link is valid.")
 
                 Http.GoodStatus_ _ body ->
                     Ok body

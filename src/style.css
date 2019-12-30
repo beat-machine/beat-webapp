@@ -258,24 +258,20 @@ label {
   20%,
   100% {
     transform: scaleY(1);
-    background-color: var(--accent);
   }
 
   25%,
   45% {
     transform: scaleY(0.4);
-    background-color: var(--accent-1);
   }
 
   50%,
   70% {
     transform: scaleY(1) scaleX(0.5);
-    background-color: var(--accent-4);
   }
 
   75%,
   95% {
     transform: scaleY(0.4) scaleX(1);
-    background-color: var(--accent-2);
   }
 }

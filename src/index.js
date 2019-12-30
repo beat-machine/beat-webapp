@@ -3,7 +3,10 @@ import css from "./style.css";
 
 const Elm = require("./Main.elm").Elm;
 const app = Elm.Main.init({
-  node: document.getElementById("elm")
+  node: document.getElementById("elm"),
+  flags: {
+    baseUrl: process.env.BASE_URL || "http://localhost:8000"
+  }
 });
 
 let lastObjectUrl;

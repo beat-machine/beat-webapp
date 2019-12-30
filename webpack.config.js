@@ -25,6 +25,7 @@ module.exports = {
     },
 
     plugins: [
-        new PrettierPlugin()
+        new PrettierPlugin(),
+        new webpack.EnvironmentPlugin(["BASE_URL"])
     ]
 };

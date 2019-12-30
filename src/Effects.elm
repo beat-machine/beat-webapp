@@ -129,7 +129,7 @@ swap : EffectType
 swap =
     { id = "swap"
     , name = "Swap"
-    , description = "Swaps two beats over the entire song."
+    , description = "Swaps two beats throughout the entire song."
     , params =
         [ { id = "x_period", name = "Every", hint = Nothing, min = 1, default = 2, max = 1000 }
         , { id = "y_period", name = "With", hint = Nothing, min = 1, default = 4, max = 1000 }
@@ -143,7 +143,7 @@ randomize : EffectType
 randomize =
     { id = "randomize"
     , name = "Randomize"
-    , description = "Totally randomize all beats."
+    , description = "Totally randomizes the order of all beats."
     , params = []
     , extraValidation = []
     , postValidation = identity
@@ -154,7 +154,7 @@ remove : EffectType
 remove =
     { id = "remove"
     , name = "Remove"
-    , description = "Remove beats entirely."
+    , description = "Removes beats entirely."
     , params =
         [ { id = "period", name = "Every", hint = Nothing, min = 2, default = 2, max = 1000 }
         ]
@@ -167,7 +167,7 @@ cut : EffectType
 cut =
     { id = "cut"
     , name = "Cut"
-    , description = "Cut beats into pieces and keep one of them."
+    , description = "Cuts beats into pieces and keeps one of them (i.e. pieces = 2, piece to keep = 2 takes the second half of each beat)."
     , params =
         [ { id = "period", name = "Every", hint = Nothing, min = 1, default = 2, max = 1000 }
         , { id = "denominator", name = "Pieces", hint = Nothing, min = 2, default = 2, max = 1000 }
@@ -209,7 +209,7 @@ reverse : EffectType
 reverse =
     { id = "reverse"
     , name = "Reverse"
-    , description = "Reverses beats."
+    , description = "Reverses individual beats."
     , params =
         [ { id = "period", name = "Every", hint = Nothing, min = 1, default = 2, max = 1000 }
         ]

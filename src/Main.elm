@@ -10,7 +10,6 @@ import File exposing (File)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Http
 import Json.Decode as D
 import Patrons
 import Random
@@ -27,7 +26,11 @@ selectNewTagline =
     Random.generate (\i -> ChangeTagline <| Maybe.withDefault "???" <| (Taglines.all |> List.drop (i - 1) |> List.head)) taglineGenerator
 
 
-main : Program () Model Msg
+type alias Flags =
+    { baseUrl : String
+    }
+
+main : Program Flags Model Msg
 main =
     Browser.element
         { init = init
@@ -60,6 +63,7 @@ type alias Model =
     , effects : EffectView.EffectCollection
     , processing : ProcessingState
     , tagline : String
+    , baseUrl : String
     }
 
 
@@ -72,7 +76,7 @@ type Msg
     | SetSongUrl String
     | SetSongFile File
     | SendSong
-    | GotSong (Result Http.Error Bytes)
+    | GotSong (Result String Bytes)
     | EffectMsg EffectView.Msg
     | ToggleCustomSettings
     | UpdateBpmEstimate Int
@@ -119,7 +123,7 @@ update msg model =
 
                         Just s ->
                             ( { model | processing = InProgress }
-                            , Cmd.batch [ clearPlayerSong (), Api.sendSong s model.settings validEffects GotSong ]
+                            , Cmd.batch [ clearPlayerSong (), Api.sendSong model.baseUrl s model.settings validEffects GotSong ]
                             )
 
                 Err _ ->
@@ -143,8 +147,8 @@ update msg model =
 
         GotSong result ->
             case result of
-                Err a ->
-                    ( { model | processing = Failed (Debug.toString a) }, Cmd.none )
+                Err s ->
+                    ( { model | processing = Failed s }, Cmd.none )
 
                 Ok s ->
                     case Base64.fromBytes s of
@@ -239,7 +243,7 @@ view model =
                                     , onInput SetSongUrl
                                     ]
                                     []
-                                , p [] [ text "Not all videos can be downloaded. If you run into weird issues (i.e. empty audio after rendering), try using an MP3 instead." ]
+                                , p [] [ text "Not all videos can be downloaded. If you run into issues, try using an MP3 instead." ]
                                 ]
                     ]
                 ]
@@ -307,9 +311,13 @@ view model =
             ]
         , section []
             [ h3 [] [ text "Support" ]
-            , p [] [ text "Continued development of The Beat Machine is made possible by supporters on Patreon!" ]
+            , p [] [ text "Continued development of The Beat Machine is made possible by supporters on Patreon." ]
             , div [ class "patrons" ] (List.map (\p -> Html.map (\_ -> NoOp) (Patrons.viewPatron p)) Patrons.all)
-            , p [] [ text "If you'd like to have your name and links on this page, consider making a pledge." ]
+            , p []
+                [ text "If you'd like to keep the site online and promote yourself on this page, "
+                , a [ href "https://www.patreon.com/branchpanic" ] [ text "consider making a pledge" ]
+                , text "!"
+                ]
             ]
         , section [ class "frame" ]
             [ h3 [] [ text "Result" ]
@@ -336,7 +344,7 @@ view model =
                         ]
 
                 Failed errorMsg ->
-                    p [ class "status", class "error" ] [ text ("An error occurred (" ++ errorMsg ++ "). ") ]
+                    p [ class "status", class "error" ] [ text errorMsg ]
 
                 _ ->
                     text ""
@@ -357,6 +365,15 @@ view model =
                 , text " to download the result."
                 ]
             ]
+        , footer []
+            [ p []
+                [ text "Version 19.12.0. Created by "
+                , a [ href "https://twitter.com/branchpanic" ] [ text "@branchpanic" ]
+                , text ". Check out the source "
+                , a [ href "https://github.com/beat-machine" ] [ text "on GitHub" ]
+                , text "."
+                ]
+            ]
         ]
 
 
@@ -374,8 +391,8 @@ subscriptions _ =
     Sub.none
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
+init : Flags -> ( Model, Cmd Msg )
+init flags =
     ( { song = Nothing
       , inputMode = File
       , settings = Nothing
@@ -384,6 +401,7 @@ init _ =
             ]
       , processing = NotStarted
       , tagline = ""
+      , baseUrl = flags.baseUrl
       }
     , selectNewTagline
     )
