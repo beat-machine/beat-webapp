@@ -1,7 +1,8 @@
 dependencies:
   copy-webpack-plugin: 5.1.1_webpack@4.41.5
   css-loader: 3.4.0_webpack@4.41.5
-  elm-webpack-loader: 6.0.1
+  elm: 0.19.1-3
+  elm-webpack-loader: 6.0.1_elm@0.19.1-3
   file-loader: 5.0.2_webpack@4.41.5
   prettier: 1.19.1
   prettier-plugin-elm: 0.5.0
@@ -1220,8 +1221,9 @@ packages:
     requiresBuild: true
     resolution:
       integrity: sha512-BRQaVQOGt9gxK1hqSJn1MISxDGdln22PSYzmHMjqpQY3S9OJY/3kPn5HoiH3bHQYQFwC+X0apsMZldK9VxySow==
-  /elm-webpack-loader/6.0.1:
+  /elm-webpack-loader/6.0.1_elm@0.19.1-3:
     dependencies:
+      elm: 0.19.1-3
       glob: 7.1.6
       loader-utils: 1.2.3
       node-elm-compiler: 5.0.4
@@ -1233,6 +1235,16 @@ packages:
       elm: ^0.19.1-2 || 0.19.0-no-deps
     resolution:
       integrity: sha512-SkltiDAbegaiPxsQq7sxqTyRUXzD4n6UaT9JTZXIYoAjAEi/ogaIbYLQD6Ne5ZaSW3JOo6S/vb+VO5v0qDdirw==
+  /elm/0.19.1-3:
+    dependencies:
+      request: 2.88.0
+    dev: false
+    engines:
+      node: '>=7.0.0'
+    hasBin: true
+    requiresBuild: true
+    resolution:
+      integrity: sha512-6y36ewCcVmTOx8lj7cKJs3bhI5qMfoVEigePZ9PhEUNKpwjjML/pU2u2YSpHVAznuCcojoF6KIsrS1Ci7GtVaQ==
   /emoji-regex/7.0.3:
     dev: false
     resolution:
@@ -4993,6 +5005,7 @@ packages:
 specifiers:
   copy-webpack-plugin: ^5.1.1
   css-loader: ^3.4.0
+  elm: ^0.19.1-3
   elm-webpack-loader: ^6.0.1
   file-loader: ^5.0.2
   pnpm: ^4.6.0
