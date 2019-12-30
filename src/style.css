@@ -84,7 +84,13 @@ h6 {
 }
 
 .app {
-  margin-top: 5%;
+  margin-top: 18%;
+}
+
+@media (min-width: 550px) {
+  .app {
+    margin-top: 8%;
+  }
 }
 
 section {

@@ -30,6 +30,7 @@ type alias Flags =
     { baseUrl : String
     }
 
+
 main : Program Flags Model Msg
 main =
     Browser.element
@@ -161,7 +162,7 @@ update msg model =
         UpdateBpmEstimate i ->
             case model.settings of
                 Just s ->
-                    ( { model | settings = Just { s | estimatedBpm = i } }, Cmd.none )
+                    ( { model | settings = Just { s | estimatedBpm = clamp 10 300 i } }, Cmd.none )
 
                 Nothing ->
                     ( model, Cmd.none )
@@ -169,7 +170,7 @@ update msg model =
         UpdateTolerance i ->
             case model.settings of
                 Just s ->
-                    ( { model | settings = Just { s | tolerance = i } }, Cmd.none )
+                    ( { model | settings = Just { s | tolerance = clamp 3 300 i } }, Cmd.none )
 
                 Nothing ->
                     ( model, Cmd.none )
@@ -276,7 +277,7 @@ view model =
                             )
                         , onInput (String.toInt >> Maybe.withDefault 10 >> UpdateBpmEstimate)
                         , Html.Attributes.min "10"
-                        , Html.Attributes.max "500"
+                        , Html.Attributes.max "300"
                         , class "u-full-width"
                         , disabled (model.settings == Nothing)
                         ]
@@ -296,7 +297,7 @@ view model =
                             )
                         , onInput (String.toInt >> Maybe.withDefault 3 >> UpdateTolerance)
                         , Html.Attributes.min "3"
-                        , Html.Attributes.max "500"
+                        , Html.Attributes.max "300"
                         , class "u-full-width"
                         , disabled (model.settings == Nothing)
                         ]
