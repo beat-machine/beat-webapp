@@ -1,4 +1,6 @@
 const PrettierPlugin = require("prettier-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
     module: {
@@ -26,6 +28,9 @@ module.exports = {
 
     plugins: [
         new PrettierPlugin(),
-        new webpack.EnvironmentPlugin(["BASE_URL"])
+        new webpack.EnvironmentPlugin(["BASE_URL"]),
+        new CopyWebpackPlugin([
+            { from: 'public' }
+        ])
     ]
 };
