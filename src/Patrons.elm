@@ -1,6 +1,5 @@
 module Patrons exposing (Patron, all, viewPatron)
 
-import Dict
 import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
