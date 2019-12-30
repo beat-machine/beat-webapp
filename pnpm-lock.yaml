@@ -11,6 +11,8 @@ dependencies:
   webpack: 4.41.5_webpack@4.41.5
   webpack-cli: 3.3.10_webpack@4.41.5
   webpack-dev-server: 3.10.1_webpack@4.41.5
+devDependencies:
+  pnpm: 4.6.0
 lockfileVersion: 5.1
 packages:
   /@types/events/3.0.0:
@@ -3349,6 +3351,13 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-/E57AYkoeQ25qkxMj5PBOVgF8Kiu/h7cYS30Z5+R7WaiCCBfLq58ZI/dSeaEKb9WVJV5n/03QwrN3IeWIFllvw==
+  /pnpm/4.6.0:
+    dev: true
+    engines:
+      node: '>=10'
+    hasBin: true
+    resolution:
+      integrity: sha512-KTRmtPFUrRfSp3pC7nvg6+MD7KmLZFsnUVNmRgO/zOO/AUsTDIZsbwOqdxZULld7RUfZZmHbSHCGvudIX8Ix8w==
   /portfinder/1.0.25:
     dependencies:
       async: 2.6.3
@@ -4986,6 +4995,7 @@ specifiers:
   css-loader: ^3.4.0
   elm-webpack-loader: ^6.0.1
   file-loader: ^5.0.2
+  pnpm: ^4.6.0
   prettier: ^1.19.1
   prettier-plugin-elm: ^0.5.0
   prettier-webpack-plugin: ^1.2.0
