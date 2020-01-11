@@ -1,4 +1,4 @@
-module Effects exposing (EffectInstance, EffectType, ParamInfo, all, defaultValues, effectValidator, validateAll, randomize, swap)
+module Effects exposing (EffectInstance, EffectType, ParamInfo, all, swap, defaultValues, effectValidator, validateAll)
 
 import Dict exposing (Dict)
 import Validate exposing (Validator)
@@ -125,6 +125,11 @@ all =
     [ swap, randomize, remove, cut, repeat, silence, reverse ]
 
 
+offsetParam : ParamInfo
+offsetParam =
+    { id = "offset", name = "Offset", hint = Just "Number of beats to wait before applying this effect", min = 0, default = 0, max = 1000 }
+
+
 swap : EffectType
 swap =
     { id = "swap"
@@ -133,6 +138,7 @@ swap =
     , params =
         [ { id = "x_period", name = "Every", hint = Nothing, min = 1, default = 2, max = 1000 }
         , { id = "y_period", name = "With", hint = Nothing, min = 1, default = 4, max = 1000 }
+        , offsetParam
         ]
     , extraValidation = [ Validate.ifTrue (\m -> Dict.get "x_period" m == Dict.get "y_period" m) "Can't swap a beat with itself! Try changing one of the values below." ]
     , postValidation = identity
@@ -157,6 +163,7 @@ remove =
     , description = "Removes beats entirely."
     , params =
         [ { id = "period", name = "Every", hint = Nothing, min = 2, default = 2, max = 1000 }
+        , offsetParam
         ]
     , extraValidation = []
     , postValidation = identity
@@ -170,6 +177,7 @@ cut =
     , description = "Cuts beats into pieces and keeps one of them (i.e. pieces = 2, piece to keep = 2 takes the second half of each beat)."
     , params =
         [ { id = "period", name = "Every", hint = Nothing, min = 1, default = 2, max = 1000 }
+        , offsetParam
         , { id = "denominator", name = "Pieces", hint = Nothing, min = 2, default = 2, max = 1000 }
         , { id = "take_index", name = "Piece to Keep", hint = Nothing, min = 1, default = 1, max = 1000 }
         ]
@@ -185,6 +193,7 @@ repeat =
     , description = "Repeat beats a certain number of times."
     , params =
         [ { id = "period", name = "Every", hint = Nothing, min = 1, default = 2, max = 1000 }
+        , offsetParam
         , { id = "times", name = "Times", hint = Nothing, min = 1, default = 2, max = 1000 }
         ]
     , extraValidation = []
@@ -199,6 +208,7 @@ silence =
     , description = "Silences beats, but retains their length."
     , params =
         [ { id = "period", name = "Every", hint = Nothing, min = 2, default = 2, max = 1000 }
+        , offsetParam
         ]
     , extraValidation = []
     , postValidation = identity
@@ -212,6 +222,7 @@ reverse =
     , description = "Reverses individual beats."
     , params =
         [ { id = "period", name = "Every", hint = Nothing, min = 1, default = 2, max = 1000 }
+        , offsetParam
         ]
     , extraValidation = []
     , postValidation = identity
