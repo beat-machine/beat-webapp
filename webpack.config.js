@@ -2,7 +2,7 @@ const PrettierPlugin = require("prettier-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const webpack = require("webpack");
 
-module.exports = {
+module.exports = (env, argv) => ({
     module: {
         rules: [{
             test: /\.html$/,
@@ -13,7 +13,9 @@ module.exports = {
             exclude: [/elm-stuff/, /node_modules/],
             use: {
                 loader: 'elm-webpack-loader',
-                options: {}
+                options: {
+                    optimize: argv.mode === 'production'
+                }
             }
         }, {
             test:  /\.css$/i,
@@ -33,4 +35,4 @@ module.exports = {
             { from: 'public' }
         ])
     ]
-};
+});

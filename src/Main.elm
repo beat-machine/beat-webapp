@@ -368,7 +368,7 @@ view model =
             ]
         , footer []
             [ p []
-                [ text "Version 19.12.0. Created by "
+                [ text "Version 20.01.0. Created by "
                 , a [ href "https://twitter.com/branchpanic" ] [ text "@branchpanic" ]
                 , text ". Check out the source "
                 , a [ href "https://github.com/beat-machine" ] [ text "on GitHub" ]

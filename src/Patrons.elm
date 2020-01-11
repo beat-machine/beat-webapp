@@ -15,7 +15,7 @@ type alias Patron =
 all : List Patron
 all =
     [ { name = "Thomas L"
-      , tier = 6
+      , tier = 1
       , links =
             [ ( FeatherIcons.youtube, "https://www.youtube.com/channel/UCThULshLB0qiEoL73KxeNbQ" )
             ]
