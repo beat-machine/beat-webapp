@@ -28,8 +28,8 @@ selectNewTagline =
 
 type alias Flags =
     { baseUrl : String
+    , version : String
     }
-
 
 main : Program Flags Model Msg
 main =
@@ -58,15 +58,15 @@ type ProcessingState
 
 
 type alias Model =
-    { song : Maybe Api.SongSource
+    { baseUrl : String
+    , version : String
+    , song : Maybe Api.SongSource
     , settings : Maybe Api.ProcessingSettings
     , inputMode : InputMode
     , effects : EffectView.EffectCollection
     , processing : ProcessingState
     , tagline : String
-    , baseUrl : String
     }
-
 
 
 -- UPDATE
@@ -124,7 +124,14 @@ update msg model =
 
                         Just s ->
                             ( { model | processing = InProgress }
-                            , Cmd.batch [ clearPlayerSong (), Api.sendSong model.baseUrl s model.settings validEffects GotSong ]
+                            , Cmd.batch [ clearPlayerSong (),
+                                         Api.sendSong
+                                            { apiUrl = model.baseUrl
+                                            , song = s
+                                            , settings = model.settings
+                                            , effects = validEffects
+                                            } GotSong
+                                        ]
                             )
 
                 Err _ ->
@@ -162,7 +169,7 @@ update msg model =
         UpdateBpmEstimate i ->
             case model.settings of
                 Just s ->
-                    ( { model | settings = Just { s | estimatedBpm = clamp 10 300 i } }, Cmd.none )
+                    ( { model | settings = Just { s | estimatedBpm = i } }, Cmd.none )
 
                 Nothing ->
                     ( model, Cmd.none )
@@ -170,7 +177,7 @@ update msg model =
         UpdateTolerance i ->
             case model.settings of
                 Just s ->
-                    ( { model | settings = Just { s | tolerance = clamp 3 300 i } }, Cmd.none )
+                    ( { model | settings = Just { s | tolerance = i } }, Cmd.none )
 
                 Nothing ->
                     ( model, Cmd.none )
@@ -277,7 +284,7 @@ view model =
                             )
                         , onInput (String.toInt >> Maybe.withDefault 10 >> UpdateBpmEstimate)
                         , Html.Attributes.min "10"
-                        , Html.Attributes.max "300"
+                        , Html.Attributes.max "500"
                         , class "u-full-width"
                         , disabled (model.settings == Nothing)
                         ]
@@ -297,7 +304,7 @@ view model =
                             )
                         , onInput (String.toInt >> Maybe.withDefault 3 >> UpdateTolerance)
                         , Html.Attributes.min "3"
-                        , Html.Attributes.max "300"
+                        , Html.Attributes.max "500"
                         , class "u-full-width"
                         , disabled (model.settings == Nothing)
                         ]
@@ -368,7 +375,7 @@ view model =
             ]
         , footer []
             [ p []
-                [ text "Version 20.01.0. Created by "
+                [ text <| "Version " ++ model.version ++ ". Created by "
                 , a [ href "https://twitter.com/branchpanic" ] [ text "@branchpanic" ]
                 , text ". Check out the source "
                 , a [ href "https://github.com/beat-machine" ] [ text "on GitHub" ]
@@ -403,6 +410,7 @@ init flags =
       , processing = NotStarted
       , tagline = ""
       , baseUrl = flags.baseUrl
+      , version = flags.version
       }
     , selectNewTagline
     )
@@ -411,8 +419,8 @@ init flags =
 
 -- PORTS
 
-
+{-| Clears the current song in the audio player. -}
 port clearPlayerSong : () -> Cmd msg
 
-
+{-| Updates the current song in the audio player with a base64 audio stream. -}
 port updatePlayerSong : String -> Cmd msg

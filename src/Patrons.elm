@@ -1,6 +1,6 @@
 module Patrons exposing (Patron, all, viewPatron)
 
-import FeatherIcons
+import FeatherIcons exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
@@ -17,8 +17,7 @@ all =
     [ { name = "Thomas L"
       , tier = 1
       , links =
-            [ ( FeatherIcons.youtube, "https://www.youtube.com/channel/UCThULshLB0qiEoL73KxeNbQ" )
-            ]
+            [ ( youtube, "https://www.youtube.com/channel/UCThULshLB0qiEoL73KxeNbQ" ) ]
       }
     ]
 
