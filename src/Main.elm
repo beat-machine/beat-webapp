@@ -4,8 +4,9 @@ import Api
 import Base64
 import Browser
 import Bytes exposing (Bytes)
-import EffectView
-import Effects
+import Effect
+import Effect.Types
+import Effect.View
 import File exposing (File)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -63,7 +64,7 @@ type alias Model =
     , song : Maybe Api.SongSource
     , settings : Maybe Api.ProcessingSettings
     , inputMode : InputMode
-    , effects : EffectView.EffectCollection
+    , effects : List Effect.Instance
     , processing : ProcessingState
     , tagline : String
     }
@@ -78,7 +79,7 @@ type Msg
     | SetSongFile File
     | SendSong
     | GotSong (Result String Bytes)
-    | EffectMsg EffectView.Msg
+    | EffectMsg Effect.View.Msg
     | ToggleCustomSettings
     | UpdateBpmEstimate Int
     | UpdateTolerance Int
@@ -87,9 +88,9 @@ type Msg
     | RandomizeTagline
 
 
-canSubmit : List Effects.EffectInstance -> Bool
+canSubmit : List Effect.Instance -> Bool
 canSubmit effects =
-    case Effects.validateAll effects of
+    case Effect.validateAll effects of
         Ok _ ->
             True
 
@@ -116,7 +117,7 @@ update msg model =
             ( { model | song = Just <| Api.FromFile f }, Cmd.none )
 
         SendSong ->
-            case Effects.validateAll model.effects of
+            case Effect.validateAll model.effects of
                 Ok validEffects ->
                     case model.song of
                         Nothing ->
@@ -151,7 +152,7 @@ update msg model =
             )
 
         EffectMsg m ->
-            ( { model | effects = EffectView.update m model.effects }, Cmd.none )
+            ( { model | effects = Effect.View.update m model.effects }, Cmd.none )
 
         GotSong result ->
             case result of
@@ -315,7 +316,7 @@ view model =
         , section [ class "frame" ]
             [ h3 [] [ text "Effects" ]
             , p [] [ text "Add up to 5 sequential effects to rearrange your song." ]
-            , Html.map EffectMsg (EffectView.viewAllEffects model.effects)
+            , Html.map EffectMsg (Effect.View.viewEffects model.effects)
             ]
         , section []
             [ h3 [] [ text "Support" ]
@@ -405,7 +406,7 @@ init flags =
       , inputMode = File
       , settings = Nothing
       , effects =
-            [ { type_ = Effects.swap, values = Effects.defaultValues Effects.swap }
+            [ { type_ = Effect.Types.swap, values = Effect.defaultValues Effect.Types.swap }
             ]
       , processing = NotStarted
       , tagline = ""

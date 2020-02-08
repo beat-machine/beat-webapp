@@ -2,7 +2,7 @@ module Api exposing (ProcessingSettings, ProcessingPayload, SongSource(..), send
 
 import Bytes exposing (Bytes)
 import Dict
-import Effects
+import Effect
 import File exposing (File)
 import Http exposing (filePart, jsonBody, multipartBody, post, stringPart)
 import Json.Encode as Encode
@@ -36,14 +36,14 @@ type alias ProcessingPayload =
     { apiUrl : String
     , song : SongSource
     , settings : Maybe ProcessingSettings
-    , effects : List (Validate.Valid Effects.EffectInstance)
+    , effects : List (Validate.Valid Effect.Instance)
     }
 
 
 -- ENCODING
 
 
-encodeEffect : Effects.EffectInstance -> Encode.Value
+encodeEffect : Effect.Instance -> Encode.Value
 encodeEffect effect =
     let
         paramFields =
@@ -58,7 +58,7 @@ encodeEffect effect =
     Encode.object <| ( "type", Encode.string effect.type_.id ) :: paramFields
 
 
-effectsToJsonArray : List Effects.EffectInstance -> Encode.Value
+effectsToJsonArray : List Effect.Instance -> Encode.Value
 effectsToJsonArray effects =
     effects
         |> List.map encodeEffect
@@ -76,7 +76,7 @@ encodeSettings settings =
 -- API Calls
 
 
-sendSongFromYouTube : String -> String -> Maybe ProcessingSettings -> List (Validate.Valid Effects.EffectInstance) -> (Result String Bytes -> msg) -> Cmd msg
+sendSongFromYouTube : String -> String -> Maybe ProcessingSettings -> List (Validate.Valid Effect.Instance) -> (Result String Bytes -> msg) -> Cmd msg
 sendSongFromYouTube baseUrl youtubeUrl settings effects toMsg =
     let
         body =
@@ -94,7 +94,7 @@ sendSongFromYouTube baseUrl youtubeUrl settings effects toMsg =
         }
 
 
-sendSongFromFile : String -> File -> Maybe ProcessingSettings -> List (Validate.Valid Effects.EffectInstance) -> (Result String Bytes -> msg) -> Cmd msg
+sendSongFromFile : String -> File -> Maybe ProcessingSettings -> List (Validate.Valid Effect.Instance) -> (Result String Bytes -> msg) -> Cmd msg
 sendSongFromFile baseUrl file settings effects toMsg =
     let
         effectsObject =
