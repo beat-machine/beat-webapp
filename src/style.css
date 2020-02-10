@@ -1,11 +1,10 @@
-@import "~skeleton-css/css/skeleton.css";
-@import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700|Source+Sans+Pro&display=swap");
+@import url("Common/default-colors.css");
 
 :root {
   color-scheme: light dark;
 
-  --frames: #aaaab2;
   --background: #121219;
+  --background-grid: #1a1a20;
   --inset-background: #101014;
   --text: #f2f2fa;
   --disabled-text: #888;
@@ -13,37 +12,17 @@
   --accent: #fa840f;
   --accent-hover: #cc6516;
   --error: #f23f35;
+
   --patron-gold: #fcf765;
+  --patron-silver: #f2f2f2;
 
   --accent-1: #faeb2c;
   --accent-2: #f52789;
   --accent-3: #e900ff;
   --accent-4: #1685f8;
-
-  --background-pattern: linear-gradient(to right, #1a1a20 1px, transparent 1px),
-    linear-gradient(to bottom, #1a1a20 1px, transparent 1px);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --background: #fff;
-    --frames: #223;
-
-    --text: #223;
-    --disabled-text: #666;
-    --text: #111;
-
-    --patron-gold: #d1a104;
-
-    --accent-1: #fa772c;
-    --accent-2: #f52789;
-    --accent-3: #e900ff;
-    --accent-4: #1685f8;
-
-    --background-pattern: linear-gradient(to right, #eef 1px, transparent 1px),
-      linear-gradient(to bottom, #eef 1px, transparent 1px);
-  }
-}
+@import url("Common/base.css");
 
 body {
   background-color: var(--background);
@@ -132,8 +111,13 @@ audio {
   padding: 20px;
 }
 
-.effect-controls button {
+.effect-controls .button {
   margin-right: 10px;
+}
+
+.effect-controls .feather {
+  margin: 0;
+  vertical-align: middle;
 }
 
 .patrons {
@@ -143,6 +127,11 @@ audio {
 .render-button-container {
   text-align: center;
   margin-bottom: 1rem;
+}
+
+.tier-1 h5,
+.tier-1 a {
+  color: var(--patron-silver);
 }
 
 .tier-6 h5,

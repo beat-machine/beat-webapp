@@ -7,6 +7,7 @@ import File exposing (File)
 import Http exposing (filePart, jsonBody, multipartBody, post, stringPart)
 import Json.Encode as Encode
 import Validate
+import Common.HttpExtras
 
 
 
@@ -90,7 +91,7 @@ sendSongFromYouTube baseUrl youtubeUrl settings effects toMsg =
     post
         { url = baseUrl ++ "/yt"
         , body = body
-        , expect = expectSongBytes toMsg
+        , expect = Common.HttpExtras.expectRawBytes toMsg
         }
 
 
@@ -112,7 +113,7 @@ sendSongFromFile baseUrl file settings effects toMsg =
     post
         { url = baseUrl
         , body = body
-        , expect = expectSongBytes toMsg
+        , expect = Common.HttpExtras.expectRawBytes toMsg
         }
 
 
@@ -127,24 +128,3 @@ sendSong payload toMsg =
 
         FromYoutubeUrl url ->
             sendSongFromYouTube payload.apiUrl url payload.settings payload.effects toMsg
-
-
-expectSongBytes : (Result String Bytes -> msg) -> Http.Expect msg
-expectSongBytes toMsg =
-    Http.expectBytesResponse toMsg <|
-        \response ->
-            case response of
-                Http.BadUrl_ _ ->
-                    Err "Failed to process server URL. This is a bug. If you have the time, please report it!"
-
-                Http.Timeout_ ->
-                    Err "A timeout occurred while contacting the server. It may be down or under heavy load. Try again in a moment."
-
-                Http.NetworkError_ ->
-                    Err "A network error occurred. Make sure that your MP3 or YouTube link is valid."
-
-                Http.BadStatus_ metadata _ ->
-                    Err ("A network error occurred (" ++ String.fromInt metadata.statusCode ++ "). Make sure that your MP3 or YouTube link is valid.")
-
-                Http.GoodStatus_ _ body ->
-                    Ok body

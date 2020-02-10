@@ -12,9 +12,9 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as D
-import Patrons
 import Random
 import Taglines
+import Common.Content
 
 
 taglineGenerator : Random.Generator Int
@@ -31,6 +31,7 @@ type alias Flags =
     { baseUrl : String
     , version : String
     }
+
 
 main : Program Flags Model Msg
 main =
@@ -68,6 +69,7 @@ type alias Model =
     , processing : ProcessingState
     , tagline : String
     }
+
 
 
 -- UPDATE
@@ -125,14 +127,16 @@ update msg model =
 
                         Just s ->
                             ( { model | processing = InProgress }
-                            , Cmd.batch [ clearPlayerSong (),
-                                         Api.sendSong
-                                            { apiUrl = model.baseUrl
-                                            , song = s
-                                            , settings = model.settings
-                                            , effects = validEffects
-                                            } GotSong
-                                        ]
+                            , Cmd.batch
+                                [ clearPlayerSong ()
+                                , Api.sendSong
+                                    { apiUrl = model.baseUrl
+                                    , song = s
+                                    , settings = model.settings
+                                    , effects = validEffects
+                                    }
+                                    GotSong
+                                ]
                             )
 
                 Err _ ->
@@ -191,144 +195,146 @@ update msg model =
 -- VIEW
 
 
-view : Model -> Html Msg
-view model =
-    div
-        [ class "container"
-        , class "app"
+viewInfo : Model -> Html Msg
+viewInfo model =
+    section []
+        [ h1 [ class "one-word-per-line" ] [ text "The Beat Machine" ]
+        , h3 [ class "tagline", onClick RandomizeTagline ] [ text model.tagline ]
+        , p [] [ text "Ever wondered what your favorite song sounds like with every other beat missing? No? Well, either way, now you can find out! The Beat Machine is a webapp for making beat edits to songs." ]
         ]
-        [ section []
-            [ h1 [ class "one-word-per-line" ] [ text "The Beat Machine" ]
-            , h3 [ class "tagline", onClick RandomizeTagline ] [ text model.tagline ]
-            , p [] [ text "Ever wondered what your favorite song sounds like with every other beat missing? No? Well, either way, now you can find out! The Beat Machine is a webapp for making beat edits to songs." ]
-            ]
-        , section [ class "frame" ]
-            [ h3 [] [ text "Song" ]
-            , p [] [ text "Choose and configure a song. Shorter songs process faster!" ]
-            , div [ class "row" ]
-                [ div [ class "four", class "columns" ]
-                    [ label [] [ text "Source" ]
-                    , label []
-                        [ input
-                            [ onClick (ChangeInputMode File)
-                            , type_ "radio"
-                            , name "input-mode"
-                            , checked (model.inputMode == File)
-                            ]
-                            []
-                        , span [ class "label-body" ] [ text "MP3 File" ]
-                        ]
-                    , label []
-                        [ input
-                            [ onClick (ChangeInputMode Url)
-                            , type_ "radio"
-                            , name "input-mode"
-                            , checked (model.inputMode == Url)
-                            ]
-                            []
-                        , span [ class "label-body" ] [ text "YouTube Video" ]
-                        ]
-                    ]
-                , div [ class "eight", class "columns" ]
-                    [ case model.inputMode of
-                        File ->
-                            div []
-                                [ label [] [ text "Select file" ]
-                                , input
-                                    [ type_ "file"
-                                    , multiple False
-                                    , accept "audio/mpeg, .mp3"
-                                    , on "change" (D.map SetSongFile filesDecoder)
-                                    ]
-                                    []
-                                ]
 
-                        Url ->
-                            div []
-                                [ label [] [ text "Paste YouTube video URL" ]
-                                , input
-                                    [ type_ "url"
-                                    , class "u-full-width"
-                                    , onInput SetSongUrl
-                                    ]
-                                    []
-                                , p [] [ text "Not all videos can be downloaded. If you run into issues, try using an MP3 instead." ]
-                                ]
-                    ]
-                ]
-            , br [] []
-            , p [] [ text "The following settings are optional, but let you fine-tune the result if it's not what you expected. When using live performances or songs with tempo changes, be sure to set a high enough tolerance." ]
-            , div [ class "row" ]
-                [ div [ class "four", class "columns" ]
-                    [ label []
-                        [ input
-                            [ type_ "checkbox"
-                            , name "use-bpm"
-                            , onClick ToggleCustomSettings
-                            , checked (model.settings /= Nothing)
-                            ]
-                            []
-                        , span [ class "label-body" ] [ text "Set tempo manually" ]
-                        ]
-                    ]
-                , div [ class "four", class "columns" ]
-                    [ label [] [ text "Estimated BPM" ]
-                    , input
-                        [ type_ "number"
-                        , value
-                            (case model.settings of
-                                Just settings ->
-                                    String.fromInt settings.estimatedBpm
 
-                                Nothing ->
-                                    ""
-                            )
-                        , onInput (String.toInt >> Maybe.withDefault 10 >> UpdateBpmEstimate)
-                        , Html.Attributes.min "10"
-                        , Html.Attributes.max "500"
-                        , class "u-full-width"
-                        , disabled (model.settings == Nothing)
+viewSongSelector : Model -> Html Msg
+viewSongSelector model =
+    section [ class "frame" ]
+        [ h3 [] [ text "Song" ]
+        , p [] [ text "Choose and configure a song. Shorter songs process faster!" ]
+        , div [ class "row" ]
+            [ div [ class "four", class "columns" ]
+                [ label [] [ text "Source" ]
+                , label []
+                    [ input
+                        [ onClick (ChangeInputMode File)
+                        , type_ "radio"
+                        , name "input-mode"
+                        , checked (model.inputMode == File)
                         ]
                         []
+                    , span [ class "label-body" ] [ text "MP3 File" ]
                     ]
-                , div [ class "four", class "columns" ]
-                    [ label [] [ text "Tolerance" ]
-                    , input
-                        [ type_ "number"
-                        , value
-                            (case model.settings of
-                                Just settings ->
-                                    String.fromInt settings.tolerance
-
-                                Nothing ->
-                                    ""
-                            )
-                        , onInput (String.toInt >> Maybe.withDefault 3 >> UpdateTolerance)
-                        , Html.Attributes.min "3"
-                        , Html.Attributes.max "500"
-                        , class "u-full-width"
-                        , disabled (model.settings == Nothing)
+                , label []
+                    [ input
+                        [ onClick (ChangeInputMode Url)
+                        , type_ "radio"
+                        , name "input-mode"
+                        , checked (model.inputMode == Url)
                         ]
                         []
+                    , span [ class "label-body" ] [ text "YouTube Video" ]
                     ]
                 ]
-            ]
-        , section [ class "frame" ]
-            [ h3 [] [ text "Effects" ]
-            , p [] [ text "Add up to 5 sequential effects to rearrange your song." ]
-            , Html.map EffectMsg (Effect.View.viewEffects model.effects)
-            ]
-        , section []
-            [ h3 [] [ text "Support" ]
-            , p [] [ text "Continued development of The Beat Machine is made possible by supporters on Patreon." ]
-            , div [ class "patrons" ] (List.map (\p -> Html.map (\_ -> NoOp) (Patrons.viewPatron p)) Patrons.all)
-            , p []
-                [ text "If you'd like to keep the site online and promote yourself on this page, "
-                , a [ href "https://www.patreon.com/branchpanic" ] [ text "consider making a pledge" ]
-                , text "!"
+            , div [ class "eight", class "columns" ]
+                [ case model.inputMode of
+                    File ->
+                        div []
+                            [ label [] [ text "Select file" ]
+                            , input
+                                [ type_ "file"
+                                , multiple False
+                                , accept "audio/mpeg, .mp3"
+                                , on "change" (D.map SetSongFile filesDecoder)
+                                ]
+                                []
+                            ]
+
+                    Url ->
+                        div []
+                            [ label [] [ text "Paste YouTube video URL" ]
+                            , input
+                                [ type_ "url"
+                                , class "u-full-width"
+                                , onInput SetSongUrl
+                                ]
+                                []
+                            , p [] [ text "Not all videos can be downloaded. If you run into issues, try using an MP3 instead." ]
+                            ]
                 ]
             ]
-        , section [ class "frame" ]
+        , br [] []
+        , p [] [ text "The following settings are optional, but let you fine-tune the result if it's not what you expected. When using live performances or songs with tempo changes, be sure to set a high enough tolerance." ]
+        , div [ class "row" ]
+            [ div [ class "four", class "columns" ]
+                [ label []
+                    [ input
+                        [ type_ "checkbox"
+                        , name "use-bpm"
+                        , onClick ToggleCustomSettings
+                        , checked (model.settings /= Nothing)
+                        ]
+                        []
+                    , span [ class "label-body" ] [ text "Set tempo manually" ]
+                    ]
+                ]
+            , div [ class "four", class "columns" ]
+                [ label [] [ text "Estimated BPM" ]
+                , input
+                    [ type_ "number"
+                    , value
+                        (case model.settings of
+                            Just settings ->
+                                String.fromInt settings.estimatedBpm
+
+                            Nothing ->
+                                ""
+                        )
+                    , onInput (String.toInt >> Maybe.withDefault 10 >> UpdateBpmEstimate)
+                    , Html.Attributes.min "10"
+                    , Html.Attributes.max "500"
+                    , class "u-full-width"
+                    , disabled (model.settings == Nothing)
+                    ]
+                    []
+                ]
+            , div [ class "four", class "columns" ]
+                [ label [] [ text "Tolerance" ]
+                , input
+                    [ type_ "number"
+                    , value
+                        (case model.settings of
+                            Just settings ->
+                                String.fromInt settings.tolerance
+
+                            Nothing ->
+                                ""
+                        )
+                    , onInput (String.toInt >> Maybe.withDefault 3 >> UpdateTolerance)
+                    , Html.Attributes.min "3"
+                    , Html.Attributes.max "500"
+                    , class "u-full-width"
+                    , disabled (model.settings == Nothing)
+                    ]
+                    []
+                ]
+            ]
+        ]
+
+
+loader : Html Msg
+loader =
+    div []
+        [ p [ class "status" ] [ text "Working on it..." ]
+        , div [ class "loader" ]
+            [ div [ id "r1" ] []
+            , div [ id "r2" ] []
+            , div [ id "r3" ] []
+            , div [ id "r4" ] []
+            ]
+        ]
+
+
+viewResult : Model -> Html Msg
+viewResult model =
+    section [ class "frame" ]
             [ h3 [] [ text "Result" ]
             , p [] [ text "Press the button to render the result! This will take a moment." ]
             , div [ class "render-button-container" ]
@@ -342,20 +348,12 @@ view model =
                 ]
             , case model.processing of
                 InProgress ->
-                    div []
-                        [ p [ class "status" ] [ text "Working on it..." ]
-                        , div [ class "loader" ]
-                            [ div [ id "r1" ] []
-                            , div [ id "r2" ] []
-                            , div [ id "r3" ] []
-                            , div [ id "r4" ] []
-                            ]
-                        ]
+                    loader
 
                 Failed errorMsg ->
                     p [ class "status", class "error" ] [ text errorMsg ]
 
-                _ ->
+                _ -> 
                     text ""
             , audio
                 [ id "player"
@@ -374,15 +372,25 @@ view model =
                 , text " to download the result."
                 ]
             ]
-        , footer []
-            [ p []
-                [ text <| "Version " ++ model.version ++ ". Created by "
-                , a [ href "https://twitter.com/branchpanic" ] [ text "@branchpanic" ]
-                , text ". Check out the source "
-                , a [ href "https://github.com/beat-machine" ] [ text "on GitHub" ]
-                , text "."
-                ]
+
+
+view : Model -> Html Msg
+view model =
+    div
+        [ class "container"
+        , class "app"
+        ]
+        [ Common.Content.viewNavbar
+        , viewInfo model
+        , viewSongSelector model
+        , section [ class "frame" ]
+            [ h3 [] [ text "Effects" ]
+            , p [] [ text "Add up to 5 sequential effects to rearrange your song." ]
+            , Html.map EffectMsg (Effect.View.viewEffects model.effects)
             ]
+        , Common.Content.viewPatreonSection NoOp "The Beat Machine"
+        , viewResult model
+        , Common.Content.standardFooterInfo model.version "https://github.com/beat-machine" |> Common.Content.viewFooter
         ]
 
 
@@ -420,8 +428,12 @@ init flags =
 
 -- PORTS
 
-{-| Clears the current song in the audio player. -}
+
+{-| Clears the current song in the audio player.
+-}
 port clearPlayerSong : () -> Cmd msg
 
-{-| Updates the current song in the audio player with a base64 audio stream. -}
+
+{-| Updates the current song in the audio player with a base64 audio stream.
+-}
 port updatePlayerSong : String -> Cmd msg

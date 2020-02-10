@@ -7,6 +7,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as D
+import FeatherIcons
 import Validate
 
 type Msg
@@ -124,8 +125,17 @@ viewEffects effects =
     div [ class "container" ]
         (List.indexedMap viewEffect effects
             ++ [ div [ class "effect-controls" ]
-                    [ button [ class "button-primary", on "click" <| D.succeed AddEffect, disabled (List.length effects >= 5) ] [ text "+" ]
-                    , button [ on "click" <| D.succeed RemoveEffect, disabled (List.length effects <= 1) ] [ text "-" ]
+                    [ a
+                        [ class "button button-primary"
+                        , on "click" <| D.succeed AddEffect
+                        , disabled (List.length effects >= 5)
+                        ]
+                        [ FeatherIcons.toHtml [ height 16 ] FeatherIcons.plus ]
+                    , a
+                        [ class "button"
+                        , on "click" <| D.succeed RemoveEffect
+                        , disabled (List.length effects <= 1) ]
+                        [ FeatherIcons.toHtml [ height 16 ] FeatherIcons.minus ]
                     ]
                ]
         )
