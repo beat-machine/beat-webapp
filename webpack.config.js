@@ -30,7 +30,7 @@ module.exports = (env, argv) => ({
 
     plugins: [
         new PrettierPlugin(),
-        new webpack.EnvironmentPlugin(["BASE_URL"]),
+        new webpack.EnvironmentPlugin(["BASE_URL", "VERSION"]),
         new CopyWebpackPlugin([
             { from: 'public' }
         ])
