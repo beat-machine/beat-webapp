@@ -25,4 +25,5 @@ all =
     , "Open source!"
     , "Fun for the whole family!"
     , "Tax-deductible!"
+    , "Disrupting the industry!"
     ]
