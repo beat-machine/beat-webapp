@@ -7,6 +7,13 @@
   --background-grid: #1a1a20;
 }
 
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #fff;
+    --background-grid: #eef;
+  }
+}
+
 @import url("Common/base.css");
 
 .effect-error {
