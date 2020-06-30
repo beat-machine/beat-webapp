@@ -388,7 +388,6 @@ view model =
             , p [] [ text "Add up to 5 sequential effects to rearrange your song." ]
             , Html.map EffectMsg (Effect.View.viewEffects model.effects)
             ]
-        , Common.Content.viewPatreonSection NoOp "The Beat Machine"
         , viewResult model
         , Common.Content.standardFooterInfo model.version "https://github.com/beat-machine" |> Common.Content.viewFooter
         ]
