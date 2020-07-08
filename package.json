@@ -1,6 +1,6 @@
 {
   "name": "beatapp",
-  "version": "19.12.0",
+  "version": "20.07.0",
   "description": "The Beat Machine webapp",
   "main": "elm.js",
   "directories": {

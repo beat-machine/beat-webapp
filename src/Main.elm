@@ -4,6 +4,7 @@ import Api
 import Base64
 import Browser
 import Bytes exposing (Bytes)
+import Common.Content
 import Effect
 import Effect.Types
 import Effect.View
@@ -14,7 +15,6 @@ import Html.Events exposing (..)
 import Json.Decode as D
 import Random
 import Taglines
-import Common.Content
 
 
 taglineGenerator : Random.Generator Int
@@ -335,43 +335,43 @@ loader =
 viewResult : Model -> Html Msg
 viewResult model =
     section [ class "frame" ]
-            [ h3 [] [ text "Result" ]
-            , p [] [ text "Press the button to render the result! This will take a moment." ]
-            , div [ class "render-button-container" ]
-                [ button
-                    [ disabled (model.song == Nothing || model.processing == InProgress || List.length model.effects <= 0 || not (canSubmit model.effects))
-                    , onClick SendSong
-                    , class "button-primary"
-                    , class "render-button"
-                    ]
-                    [ text "Render!" ]
+        [ h3 [] [ text "Result" ]
+        , p [] [ text "Press the button to render the result! This will take a moment." ]
+        , div [ class "render-button-container" ]
+            [ button
+                [ disabled (model.song == Nothing || model.processing == InProgress || List.length model.effects <= 0 || not (canSubmit model.effects))
+                , onClick SendSong
+                , class "button-primary"
+                , class "render-button"
                 ]
-            , case model.processing of
-                InProgress ->
-                    loader
-
-                Failed errorMsg ->
-                    p [ class "status", class "error" ] [ text errorMsg ]
-
-                _ -> 
-                    text ""
-            , audio
-                [ id "player"
-                , controls True
-                , classList [ ( "hidden", model.processing /= Succeeded ) ]
-                ]
-                []
-            , p [ classList [ ( "hidden", model.processing /= Succeeded ) ], class "audio-hint" ]
-                [ text "Right-click on the player above or "
-                , a
-                    [ id "download"
-                    , download ""
-                    , href "test"
-                    ]
-                    [ text "use this link" ]
-                , text " to download the result."
-                ]
+                [ text "Render!" ]
             ]
+        , case model.processing of
+            InProgress ->
+                loader
+
+            Failed errorMsg ->
+                p [ class "status", class "error" ] [ text errorMsg ]
+
+            _ ->
+                text ""
+        , audio
+            [ id "player"
+            , controls True
+            , classList [ ( "hidden", model.processing /= Succeeded ) ]
+            ]
+            []
+        , p [ classList [ ( "hidden", model.processing /= Succeeded ) ], class "audio-hint" ]
+            [ text "Right-click on the player above or "
+            , a
+                [ id "download"
+                , download ""
+                , href "test"
+                ]
+                [ text "use this link" ]
+            , text " to download the result."
+            ]
+        ]
 
 
 view : Model -> Html Msg
@@ -385,7 +385,9 @@ view model =
         , viewSongSelector model
         , section [ class "frame" ]
             [ h3 [] [ text "Effects" ]
-            , p [] [ text "Add up to 5 sequential effects to rearrange your song." ]
+            , p [] [ text "Add up to 5 sequential effects to rearrange your song. "
+            , a [ href "https://github.com/beat-machine/beat-webapp/issues/31#issuecomment-622649410", target "_blank" ]
+                [ text "We're working on improving this process, but for now here's some more info about how it works." ] ]
             , Html.map EffectMsg (Effect.View.viewEffects model.effects)
             ]
         , viewResult model
