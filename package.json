@@ -18,7 +18,7 @@
     "url": "git+https://github.com/beat-machine/webapp-ex.git"
   },
   "author": "dhsavell",
-  "license": "MPL-2.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/beat-machine/webapp-ex/issues"
   },
