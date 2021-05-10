@@ -68,6 +68,7 @@ type alias Model =
     , effects : List Effect.Instance
     , processing : ProcessingState
     , tagline : String
+    , filename : String
     }
 
 
@@ -113,10 +114,10 @@ update msg model =
             ( { model | inputMode = m }, Cmd.none )
 
         SetSongUrl u ->
-            ( { model | song = Just <| Api.FromYoutubeUrl u }, Cmd.none )
+            ( { model | song = Just <| Api.FromYoutubeUrl u, filename = "" }, Cmd.none )
 
         SetSongFile f ->
-            ( { model | song = Just <| Api.FromFile f }, Cmd.none )
+            ( { model | song = Just <| Api.FromFile f, filename = File.name f }, Cmd.none )
 
         SendSong ->
             case Effect.validateAll model.effects of
@@ -365,8 +366,8 @@ viewResult model =
             [ text "Right-click on the player above or "
             , a
                 [ id "download"
-                , download ""
-                , href "test"
+                , download model.filename
+                , href "#"
                 ]
                 [ text "use this link" ]
             , text " to download the result."
@@ -421,6 +422,7 @@ init flags =
       , tagline = ""
       , baseUrl = flags.baseUrl
       , version = flags.version
+      , filename = ""
       }
     , selectNewTagline
     )
