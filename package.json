@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/beat-machine/webapp-ex.git"
+    "url": "git+https://github.com/beat-machine/beat-webapp.git"
   },
   "author": "dhsavell",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/beat-machine/webapp-ex/issues"
+    "url": "https://github.com/beat-machine/beat-webapp/issues"
   },
-  "homepage": "https://github.com/beat-machine/webapp-ex#readme",
+  "homepage": "https://github.com/beat-machine/beat-webapp#readme",
   "dependencies": {
     "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.4.2",
