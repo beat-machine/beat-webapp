@@ -202,6 +202,11 @@ viewInfo model =
         [ h1 [ class "one-word-per-line" ] [ text "The Beat Machine" ]
         , h3 [ class "tagline", onClick RandomizeTagline ] [ text model.tagline ]
         , p [] [ text "Ever wondered what your favorite song sounds like with every other beat missing? No? Well, either way, now you can find out! The Beat Machine is a webapp for making beat edits to songs." ]
+        , p []
+            [ text "Note: this project is not under active development, but will be kept functioning for the foreseeable future. If you are interested in helping, contact "
+            , a [ href "https://twitter.com/branchpanic", target "_blank" ] [ text "@branchpanic" ]
+            , text "."
+            ]
         ]
 
 
@@ -388,7 +393,7 @@ view model =
             [ h3 [] [ text "Effects" ]
             , p [] [ text "Add up to 5 sequential effects to rearrange your song. "
             , a [ href "https://github.com/beat-machine/beat-webapp/issues/31#issuecomment-622649410", target "_blank" ]
-                [ text "We're working on improving this process, but for now here's some more info about how it works." ] ]
+                [ text "More information here." ] ]
             , Html.map EffectMsg (Effect.View.viewEffects model.effects)
             ]
         , viewResult model

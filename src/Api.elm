@@ -83,7 +83,7 @@ sendSongFromYouTube baseUrl youtubeUrl settings effects toMsg =
         body =
             jsonBody <|
                 Encode.object
-                    [ ( "youtube_url", Encode.string youtubeUrl )
+                    [ ( "url", Encode.string youtubeUrl )
                     , ( "effects", effects |> List.map Validate.fromValid |> effectsToJsonArray )
                     , ( "settings", settings |> Maybe.map encodeSettings |> Maybe.withDefault (Encode.object []) )
                     ]
