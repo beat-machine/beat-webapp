@@ -201,12 +201,7 @@ viewInfo model =
     section []
         [ h1 [ class "one-word-per-line" ] [ text "The Beat Machine" ]
         , h3 [ class "tagline", onClick RandomizeTagline ] [ text model.tagline ]
-        , p [] [ text "Ever wondered what your favorite song sounds like with every other beat missing? No? Well, either way, now you can find out! The Beat Machine is a webapp for making beat edits to songs." ]
-        , p []
-            [ text "Note: this project is not under active development, but will be kept functioning for the foreseeable future. If you are interested in helping, contact "
-            , a [ href "https://twitter.com/branchpanic", target "_blank" ] [ text "@branchpanic" ]
-            , text "."
-            ]
+        , p [] [ text "Make \"every other beat is missing\" remixes right in your browser -- and many other kinds of beat edits, too. Choose a song, stack some effects, and hear the results." ]
         ]
 
 

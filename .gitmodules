@@ -1,3 +1,0 @@
-[submodule "src/Common"]
-	path = src/Common
-	url = https://github.com/dhsavell/branchpanic.me-common.git
