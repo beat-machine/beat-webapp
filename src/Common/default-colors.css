@@ -1,0 +1,43 @@
+:root {
+  color-scheme: light dark;
+
+  --frames: #aaaab2; /* TUI-style frame color */
+  --background: #191412; /* Main page background color */
+  --background-grid: #201f1a; /* Background grid line color */
+
+  --text: #aaaab2; /* Primary text color */
+  --headings: #f2f2fa;
+  --disabled-text: #888; /* Disabled element text color */
+
+  --accent: #fa840f; /* Primary accent color */
+  --accent-hover: #cc6516; /* Accent color when hovered */
+  --accent-1: #faeb2c;
+  --accent-2: #f52789;
+  --accent-3: #e900ff;
+  --accent-4: #1685f8;
+
+  --error: #f23f35; /* Error color */
+
+  --patron-gold: #fcf765; /* Color of high-tier patrons */
+  --patron-silver: #f2f2f2; /* Color of all other patrons */
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #fff;
+    --background-grid: #eef;
+    --frames: #223;
+
+    --text: #223;
+    --headings: #111;
+    --disabled-text: #666;
+
+    --patron-gold: #d1a104;
+    --patron-silver: #808080;
+
+    --accent-1: #fa772c;
+    --accent-2: #f52789;
+    --accent-3: #e900ff;
+    --accent-4: #1685f8;
+  }
+}
