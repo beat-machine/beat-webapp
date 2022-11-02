@@ -39,6 +39,6 @@
     "webpack-dev-server": "^3.11.3"
   },
   "devDependencies": {
-    "pnpm": "^4.14.4"
+    "pnpm": "^6.15.1"
   }
 }
