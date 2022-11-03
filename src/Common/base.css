@@ -216,3 +216,8 @@ video {
     margin-bottom: 1rem;
   }
 }
+
+/* TODO: This is lame but hopefully this entire stylesheet will get replaced. */
+select {
+  color: black;
+}
