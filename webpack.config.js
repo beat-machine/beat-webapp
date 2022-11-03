@@ -29,7 +29,7 @@ module.exports = (env, argv) => ({
 
     plugins: [
         new webpack.EnvironmentPlugin({
-            BASE_URL: 'localhost:8000',
+            BASE_URL: 'http://localhost:8000',
             VERSION: 'dev',
         }),
         new CopyPlugin({
