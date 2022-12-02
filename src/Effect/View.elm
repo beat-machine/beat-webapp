@@ -60,8 +60,7 @@ viewField effectIdx values field =
     div [ class "param" ]
         [ label [] [ text field.name ]
         , input
-            [ class "u-full-width"
-            , type_ "number"
+            [ type_ "number"
             , Html.Attributes.min (String.fromInt field.min)
             , Html.Attributes.max (String.fromInt field.max)
             , value <| String.fromInt <| Maybe.withDefault 0 <| Dict.get field.id values
@@ -81,10 +80,10 @@ viewEffect effectIdx effect =
     let
         validation = Effect.validateInstance effect
     in
-    section
-        [ class "frame"
+    div
+        [ class "tbm-effect"
         , classList
-            [ ( "error"
+            [ ( "tbm-effect--error"
               , case validation of
                     Err _ ->
                         True
@@ -94,7 +93,10 @@ viewEffect effectIdx effect =
               )
             ]
         ]
-        [ h5 [] [ text <| String.fromInt (effectIdx + 1) ++ ". " ++ effect.type_.name ]
+        [ h3 [ class "tbm-effect__header" ]
+            [
+                text <| String.fromInt (effectIdx + 1) ++ ". "
+                , viewEffectSelector effectIdx Effect.Types.all ]
         , case validation of
             Ok _ ->
                 text ""
@@ -104,17 +106,15 @@ viewEffect effectIdx effect =
 
             Err (errorMsg :: _) ->
                 p [ class "effect-error" ] [ text errorMsg ]
-        , div [ class "row" ]
-            [ div [ class "five", class "columns" ]
-                [ label [] [ text "Type" ]
-                , viewEffectSelector effectIdx Effect.Types.all
-                , p [ class "effect-desc" ] [ text effect.type_.description ]
-                ]
-            , if List.length effect.type_.params > 0 then
+        , div [ class "tbm-effect__help" ]
+            [ p [] [ text effect.type_.description ]
+            ]
+        , div [ class "tbm-effect__fields" ] [
+            if List.length effect.type_.params > 0 then
                 div [ class "seven", class "columns" ] (List.map (viewField effectIdx effect.values) effect.type_.params)
 
               else
-                text ""
+                text "No settings."
             ]
         ]
 

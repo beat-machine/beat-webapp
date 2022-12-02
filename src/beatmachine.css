@@ -1,0 +1,223 @@
+@import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700|Source+Sans+Pro&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3&display=swap');
+
+/* #region Theme */
+
+:root {
+  --color-primary: #aaaab2;
+  --color-secondary: #121219;
+  --color-stealthy: #AAA;
+  --color-invisible: #121219;
+  --color-selection: #0064C140;
+  --color-link: #1EAEDB;
+  --color-link-hover: #30c5e3;
+  --color-link-visited: #2c71e8;
+  --color-alarm: #D00000;
+
+  --font-mono: 'Source Code Pro', Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
+  --font-sans: 'Source Sans 3', -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+}
+
+html {
+  background-color: var(--color-secondary);
+  background-image: linear-gradient(to right, #1a1a20 1px, transparent 1px), linear-gradient(to bottom, #1a1a20 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-mono);
+  font-weight: bold;
+  color: #EEE;
+}
+
+body main,
+section {
+  max-width: 60rem;
+}
+
+nav {
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+audio,
+video {
+  display: block;
+  background-color: black;
+}
+
+/* #endregion */
+
+/* #region tbm-logo */
+
+.tbm-logo {
+  user-select: none;
+  line-height: 2.5rem;
+}
+
+.tbm-logo__word {
+  margin: 0;
+}
+
+/* #endregion */
+
+.tbm-tagline {
+  font-style: italic;
+  margin-top: 1rem;
+  user-select: none;
+  font-weight: normal;
+}
+
+/* #region tbm-step */
+
+.tbm-step {
+  padding: 1rem;
+  padding-bottom: 3rem;
+  border-bottom: 2px solid var(--color-primary);
+}
+
+@media (min-width: 40rem) {
+  .tbm-step {
+    padding: 2rem;
+    border: 2px solid var(--color-primary);
+    box-shadow: 8px 8px var(--color-primary);
+    background-color: var(--color-secondary);
+  }
+}
+
+.tbm-step__header {
+  margin-top: 0.2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* #endregion */
+
+/* #region tbm-song-select */
+
+.tbm-song-select {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+}
+
+.tbm-song-select__heading {
+  margin-top: .5rem;
+  margin-bottom: .5rem;
+}
+
+.tbm-song-select__source {
+  width: 14rem;
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.tbm-song-select__input {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 40rem) {
+  .tbm-song-select {
+    flex-direction: row;
+    margin-bottom: 1.5rem;
+  }
+
+  .tbm-song-select__source {
+    margin-bottom: 0;
+  }
+
+  .tbm-song-select__input {
+    width: 36rem;
+  }
+}
+
+/* #endregion */
+
+/* #region tbm-song-settings */
+
+.tbm-song-settings {
+  display: flex;
+  flex-direction: column;
+}
+
+.tbm-song-settings__toggles {
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 40rem) {
+  .tbm-song-settings__toggles {
+    width: 14rem;
+    flex-shrink: 1;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.tbm-song-settings__fields {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 40rem) {
+  .tbm-song-settings {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+  }
+
+  .tbm-song-settings__fields {
+    display: flex;
+    flex-shrink: 1;
+    width: 36rem;
+    flex-direction: row;
+  }
+}
+
+/* #endregion */
+
+/* #region tbm-effect */
+
+.tbm-effect__header {
+  margin-bottom: 1rem;
+}
+
+/* #endregion */
+
+/* #region tbm-field */
+
+.tbm-field {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  flex-grow: 1;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 40rem) {
+  .tbm-field:not(:last-child) {
+    margin-right: 2rem;
+  }
+}
+
+.tbm-field__label {
+  margin-right: 1rem;
+  flex-basis: 6rem;
+  flex-grow: 0;
+}
+
+.tbm-field__input {
+  flex-grow: 1;
+}
+
+
+/* #endregion */

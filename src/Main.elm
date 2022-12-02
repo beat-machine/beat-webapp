@@ -199,50 +199,56 @@ update msg model =
 viewInfo : Model -> Html Msg
 viewInfo model =
     section []
-        [ h1 [ class "one-word-per-line" ] [ text "The Beat Machine" ]
-        , h3 [ class "tagline", onClick RandomizeTagline ] [ text model.tagline ]
+        [ h1 [ class "tbm-logo" ]
+            [ p [ class "tbm-logo__word" ] [ text "The" ]
+            , p [ class "tbm-logo__word" ] [ text "Beat" ]
+            , p [ class "tbm-logo__word" ] [ text "Machine" ]
+            ]
+        , h3 [ class "tbm-tagline", onClick RandomizeTagline ] [ text model.tagline ]
         , p [] [ text "Make \"every other beat is missing\" remixes right in your browser -- and many other kinds of beat edits, too. Choose a song, stack some effects, and hear the results." ]
         ]
 
 
 viewSongSelector : Model -> Html Msg
 viewSongSelector model =
-    section [ class "frame" ]
-        [ h3 [] [ text "Song" ]
+    section [ class "tbm-step" ]
+        [ h2 [ class "tbm-step__header" ] [ text "Song" ]
         , p [] [ text "Choose and configure a song. Shorter songs process faster!" ]
-        , div [ class "row" ]
-            [ div [ class "four", class "columns" ]
-                [ label [] [ text "Source" ]
-                , label []
+        , div [ class "tbm-song-select" ]
+            [ div [ class "tbm-song-select__source" ]
+                [ h4 [ class "tbm-song-select__heading" ] [ text "Source" ]
+                , label [ for "input-mode-audio" ]
                     [ input
                         [ onClick (ChangeInputMode File)
                         , type_ "radio"
                         , name "input-mode"
+                        , id "input-mode-audio"
                         , checked (model.inputMode == File)
                         ]
                         []
-                    , span [ class "label-body" ] [ text "MP3 File" ]
+                    , span [ ] [ text "Audio file" ]
                     ]
-                , label []
+                , label [ for "input-mode-video" ]
                     [ input
                         [ onClick (ChangeInputMode Url)
                         , type_ "radio"
                         , name "input-mode"
+                        , id "input-mode-video"
                         , checked (model.inputMode == Url)
                         ]
                         []
-                    , span [ class "label-body" ] [ text "YouTube Video" ]
+                    , span [ ] [ text "YouTube video" ]
                     ]
                 ]
-            , div [ class "eight", class "columns" ]
+            , div [ class "tbm-song-select__input" ]
                 [ case model.inputMode of
                     File ->
                         div []
-                            [ label [] [ text "Select file" ]
+                            [ h4 [ class "tbm-song-select__heading" ] [ text "Select file" ]
                             , input
                                 [ type_ "file"
                                 , multiple False
-                                , accept "audio/mpeg, .mp3"
+                                , accept "audio/mpeg, audio/x-wav, .mp3, .wav"
                                 , on "change" (D.map SetSongFile filesDecoder)
                                 ]
                                 []
@@ -250,22 +256,20 @@ viewSongSelector model =
 
                     Url ->
                         div []
-                            [ label [] [ text "Paste YouTube video URL" ]
+                            [ h4 [ class "tbm-song-select__heading" ] [ text "Paste video URL" ]
                             , input
                                 [ type_ "url"
-                                , class "u-full-width"
                                 , onInput SetSongUrl
                                 ]
                                 []
-                            , p [] [ text "Not all videos can be downloaded. If you run into issues, try using an MP3 instead." ]
+                            , p [] [ text "Some videos can't be downloaded. If you run into issues, try using an MP3." ]
                             ]
                 ]
             ]
-        , br [] []
-        , p [] [ text "The following settings are optional, but let you fine-tune the result if it's not what you expected. When using live performances or songs with tempo changes, be sure to set a high enough tolerance." ]
-        , div [ class "row" ]
-            [ div [ class "four", class "columns" ]
-                [ label []
+        , p [] [ text "If the result isn't as expected, you can fine-tune the tempo here. In most cases this isn't necessary." ]
+        , div [ class "tbm-song-settings" ]
+            [ div [ class "tbm-song-settings__toggles" ]
+                [ label [ for "use-bpm" ]
                     [ input
                         [ type_ "checkbox"
                         , name "use-bpm"
@@ -273,48 +277,50 @@ viewSongSelector model =
                         , checked (model.settings /= Nothing)
                         ]
                         []
-                    , span [ class "label-body" ] [ text "Set tempo manually" ]
+                    , text "Set tempo manually"
                     ]
                 ]
-            , div [ class "four", class "columns" ]
-                [ label [] [ text "Estimated BPM" ]
-                , input
-                    [ type_ "number"
-                    , value
-                        (case model.settings of
-                            Just settings ->
-                                String.fromInt settings.estimatedBpm
+            , div [ class "tbm-song-settings__fields" ]
+                [ div [ class "tbm-field" ]
+                    [ label [ class "tbm-field__label" ] [ text "BPM" ]
+                    , input
+                        [ class "tbm-field__field"
+                        , type_ "number"
+                        , value
+                            (case model.settings of
+                                Just settings ->
+                                    String.fromInt settings.estimatedBpm
 
-                            Nothing ->
-                                ""
-                        )
-                    , onInput (String.toInt >> Maybe.withDefault 10 >> UpdateBpmEstimate)
-                    , Html.Attributes.min "10"
-                    , Html.Attributes.max "500"
-                    , class "u-full-width"
-                    , disabled (model.settings == Nothing)
+                                Nothing ->
+                                    ""
+                            )
+                        , onInput (String.toInt >> Maybe.withDefault 10 >> UpdateBpmEstimate)
+                        , Html.Attributes.min "10"
+                        , Html.Attributes.max "500"
+                        , disabled (model.settings == Nothing)
+                        ]
+                        []
                     ]
-                    []
-                ]
-            , div [ class "four", class "columns" ]
-                [ label [] [ text "Tolerance" ]
-                , input
-                    [ type_ "number"
-                    , value
-                        (case model.settings of
-                            Just settings ->
-                                String.fromInt settings.tolerance
+                , div [ class "tbm-field" ]
+                    [ label [ class "tbm-field__label" ] [ text "Tolerance" ]
+                    , input
+                        [ class "tbm-field__field"
+                        , type_ "number"
+                        , value
+                            (case model.settings of
+                                Just settings ->
+                                    String.fromInt settings.tolerance
 
-                            Nothing ->
-                                ""
-                        )
-                    , onInput (String.toInt >> Maybe.withDefault 3 >> UpdateTolerance)
-                    , Html.Attributes.min "3"
-                    , Html.Attributes.max "500"
-                    , class "u-full-width"
-                    , disabled (model.settings == Nothing)
+                                Nothing ->
+                                    ""
+                            )
+                        , onInput (String.toInt >> Maybe.withDefault 3 >> UpdateTolerance)
+                        , Html.Attributes.min "3"
+                        , Html.Attributes.max "500"
+                        , disabled (model.settings == Nothing)
+                        ]
+                        []
                     ]
-                    []
                 ]
             ]
         ]
@@ -335,8 +341,8 @@ loader =
 
 viewResult : Model -> Html Msg
 viewResult model =
-    section [ class "frame" ]
-        [ h3 [] [ text "Result" ]
+    section [ class "tbm-step" ]
+        [ h2 [ class "tbm-step__header" ] [ text "Result" ]
         , p [] [ text "Press the button to render the result! This will take a moment." ]
         , div [ class "render-button-container" ]
             [ button
@@ -377,22 +383,20 @@ viewResult model =
 
 view : Model -> Html Msg
 view model =
-    div
-        [ class "container"
-        , class "app"
-        ]
-        [ Common.Content.viewNavbar
-        , viewInfo model
+    main_
+        []
+        [ viewInfo model
         , viewSongSelector model
-        , section [ class "frame" ]
-            [ h3 [] [ text "Effects" ]
-            , p [] [ text "Add up to 5 sequential effects to rearrange your song. "
-            , a [ href "https://github.com/beat-machine/beat-webapp/issues/31#issuecomment-622649410", target "_blank" ]
-                [ text "More information here." ] ]
+        , section [ class "tbm-step" ]
+            [ h2 [ class "tbm-step__header" ] [ text "Effects" ]
+            , p []
+                [ text "Add some effects to your song. Effects are applied in order, from top to bottom."
+                ]
             , Html.map EffectMsg (Effect.View.viewEffects model.effects)
             ]
         , viewResult model
-        , Common.Content.standardFooterInfo model.version "https://github.com/beat-machine" |> Common.Content.viewFooter
+
+        -- , Common.Content.standardFooterInfo model.version "https://github.com/beat-machine" |> Common.Content.viewFooter
         ]
 
 

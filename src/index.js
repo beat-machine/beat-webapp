@@ -1,5 +1,6 @@
 require("./index.html");
-import css from "./style.css";
+require("./base.css");
+require("./beatmachine.css");
 
 const Elm = require("./Main.elm").Elm;
 const app = Elm.Main.init({
