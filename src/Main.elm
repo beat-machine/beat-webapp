@@ -281,7 +281,7 @@ viewSongSelector model =
                     ]
                 ]
             , div [ class "tbm-song-settings__fields" ]
-                [ div [ class "tbm-field" ]
+                [ div [ class "tbm-field", class "tbm-field--inline" ]
                     [ label [ class "tbm-field__label" ] [ text "BPM" ]
                     , input
                         [ class "tbm-field__field"
@@ -301,7 +301,7 @@ viewSongSelector model =
                         ]
                         []
                     ]
-                , div [ class "tbm-field" ]
+                , div [ class "tbm-field", class "tbm-field--inline" ]
                     [ label [ class "tbm-field__label" ] [ text "Tolerance" ]
                     , input
                         [ class "tbm-field__field"

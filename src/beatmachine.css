@@ -187,8 +187,30 @@ video {
 
 /* #region tbm-effect */
 
+.tbm-effect {
+  display: flex;
+  flex-direction: column;
+}
+
+.tbm-effect__body {
+  display: flex;
+  flex-direction: column;
+}
+
+.tbm-effect__fields {
+  width: 20rem;
+}
+
+.tbm-effect__help {
+  margin-bottom: 1rem;
+}
+
 .tbm-effect__header {
   margin-bottom: 1rem;
+}
+
+.tbm-effect__selector {
+  color: #EEE;
 }
 
 /* #endregion */
@@ -204,7 +226,7 @@ video {
 }
 
 @media (min-width: 40rem) {
-  .tbm-field:not(:last-child) {
+  .tbm-field:not(:last-child).tbm-field--inline {
     margin-right: 2rem;
   }
 }

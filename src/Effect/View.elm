@@ -3,11 +3,12 @@ module Effect.View exposing (Msg, update, viewEffects)
 import Dict
 import Effect
 import Effect.Types
+import FeatherIcons
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as D
-import FeatherIcons
+
 
 type Msg
     = SetType Int (Maybe Effect.Type)
@@ -57,10 +58,11 @@ effectFromId id =
 
 viewField : Int -> Dict.Dict String Int -> Effect.Field -> Html Msg
 viewField effectIdx values field =
-    div [ class "param" ]
-        [ label [] [ text field.name ]
+    div [ class "tbm-field" ]
+        [ label [ class "tbm-field__label" ] [ text field.name ]
         , input
-            [ type_ "number"
+            [ class "tbm-field__field"
+            , type_ "number"
             , Html.Attributes.min (String.fromInt field.min)
             , Html.Attributes.max (String.fromInt field.max)
             , value <| String.fromInt <| Maybe.withDefault 0 <| Dict.get field.id values
@@ -72,13 +74,14 @@ viewField effectIdx values field =
 
 viewEffectSelector : Int -> List Effect.Type -> Html Msg
 viewEffectSelector effectIdx types =
-    select [ class "effect-type", class "u-full-width", onInput (SetType effectIdx << effectFromId) ] (List.map (\t -> option [ value t.id ] [ text t.name ]) types)
+    select [ class "tbm-effect__selector", onInput (SetType effectIdx << effectFromId) ] (List.map (\t -> option [ value t.id ] [ text t.name ]) types)
 
 
 viewEffect : Int -> Effect.Instance -> Html Msg
 viewEffect effectIdx effect =
     let
-        validation = Effect.validateInstance effect
+        validation =
+            Effect.validateInstance effect
     in
     div
         [ class "tbm-effect"
@@ -94,9 +97,9 @@ viewEffect effectIdx effect =
             ]
         ]
         [ h3 [ class "tbm-effect__header" ]
-            [
-                text <| String.fromInt (effectIdx + 1) ++ ". "
-                , viewEffectSelector effectIdx Effect.Types.all ]
+            [ text <| String.fromInt (effectIdx + 1) ++ ". "
+            , viewEffectSelector effectIdx Effect.Types.all
+            ]
         , case validation of
             Ok _ ->
                 text ""
@@ -106,15 +109,17 @@ viewEffect effectIdx effect =
 
             Err (errorMsg :: _) ->
                 p [ class "effect-error" ] [ text errorMsg ]
-        , div [ class "tbm-effect__help" ]
-            [ p [] [ text effect.type_.description ]
-            ]
-        , div [ class "tbm-effect__fields" ] [
-            if List.length effect.type_.params > 0 then
-                div [ class "seven", class "columns" ] (List.map (viewField effectIdx effect.values) effect.type_.params)
+        , div [ class "tbm-effect__body" ]
+            [ div [ class "tbm-effect__help" ]
+                [ p [] [ text effect.type_.description ]
+                ]
+            , div [ class "tbm-effect__fields" ]
+                [ if List.length effect.type_.params > 0 then
+                    div [] (List.map (viewField effectIdx effect.values) effect.type_.params)
 
-              else
-                text "No settings."
+                  else
+                    text "(No settings.)"
+                ]
             ]
         ]
 
@@ -133,7 +138,8 @@ viewEffects effects =
                     , a
                         [ class "button"
                         , on "click" <| D.succeed RemoveEffect
-                        , disabled (List.length effects <= 1) ]
+                        , disabled (List.length effects <= 1)
+                        ]
                         [ FeatherIcons.toHtml [ height 16 ] FeatherIcons.minus ]
                     ]
                ]
