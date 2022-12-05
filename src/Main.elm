@@ -202,6 +202,10 @@ viewInfo model =
         [ h1 [ class "one-word-per-line" ] [ text "The Beat Machine" ]
         , h3 [ class "tagline", onClick RandomizeTagline ] [ text model.tagline ]
         , p [] [ text "Make \"every other beat is missing\" remixes right in your browser -- and many other kinds of beat edits, too. Choose a song, stack some effects, and hear the results." ]
+        , p []
+            [ text "If you enjoy The Beat Machine, consider making a donation (one-off or recurring) to offset server costs!"
+            ]
+        , viewKofiBadge
         ]
 
 
@@ -210,7 +214,7 @@ viewSongSelector model =
     section [ class "frame" ]
         [ h3 [] [ text "Song" ]
         , p [] [ text "Choose and configure a song. Shorter songs process faster!" ]
-        , div [ class "row" ]
+        , div [ class "row", class "song-selector" ]
             [ div [ class "four", class "columns" ]
                 [ label [] [ text "Source" ]
                 , label []
@@ -261,7 +265,6 @@ viewSongSelector model =
                             ]
                 ]
             ]
-        , br [] []
         , p [] [ text "The following settings are optional, but let you fine-tune the result if it's not what you expected. When using live performances or songs with tempo changes, be sure to set a high enough tolerance." ]
         , div [ class "row" ]
             [ div [ class "four", class "columns" ]
@@ -375,6 +378,23 @@ viewResult model =
         ]
 
 
+viewKofiBadge : Html Msg
+viewKofiBadge =
+    a
+        [ href "https://ko-fi.com/T6T1GOIS4"
+        , target "_blank"
+        ]
+        [ img
+            [ height 36
+            , style "border" "0px"
+            , style "height" "36px"
+            , src "https://storage.ko-fi.com/cdn/kofi3.png?v=3"
+            , alt "Buy Me a Coffee at ko-fi.com"
+            ]
+            []
+        ]
+
+
 view : Model -> Html Msg
 view model =
     div
@@ -386,9 +406,11 @@ view model =
         , viewSongSelector model
         , section [ class "frame" ]
             [ h3 [] [ text "Effects" ]
-            , p [] [ text "Add up to 5 sequential effects to rearrange your song. "
-            , a [ href "https://github.com/beat-machine/beat-webapp/issues/31#issuecomment-622649410", target "_blank" ]
-                [ text "More information here." ] ]
+            , p []
+                [ text "Add up to 5 sequential effects to rearrange your song. "
+                , a [ href "https://github.com/beat-machine/beat-webapp/issues/31#issuecomment-622649410", target "_blank" ]
+                    [ text "More information here." ]
+                ]
             , Html.map EffectMsg (Effect.View.viewEffects model.effects)
             ]
         , viewResult model

@@ -1,5 +1,11 @@
+/*
+This is a mess. It's going to be replaced entirely. In the meantime, some features from the updated stylesheet have
+been backported here to ease the transition.
+*/
+
 @import "~skeleton-css/css/skeleton.css";
 @import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700|Source+Sans+Pro&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3&display=swap');
 
 :root {
   --background-pattern: linear-gradient(
@@ -17,15 +23,20 @@ body {
   background-size: 20px 20px;
   background-image: var(--background-pattern);
   color: var(--text);
-  font-family: "Source Code Pro", monospace;
+  font-size: 1.7rem;
+  font-family: "Source Sans 3", sans-serif;
 }
 
 nav {
   background: var(--frames);
   color: var(--background);
-  margin-bottom: 45px;
+  margin-bottom: 4rem;
   padding: 5px;
   user-select: none;
+}
+
+.song-selector {
+  margin-bottom: 1.75rem;
 }
 
 nav a {
@@ -44,27 +55,27 @@ section {
 }
 
 .app {
-  margin-top: 10%;
-  margin-bottom: 4%;
+  margin-top: 6rem;
+  margin-bottom: 6rem;
 }
 
 @media (min-width: 550px) {
   .app {
-    margin-top: 6%;
+    margin-top: 8rem;
   }
 }
 
 @media (min-width: 550px) {
   .frame {
     background-color: var(--background);
-    border: 5px solid var(--frames);
-    padding: 20px;
-    box-shadow: 10px 10px var(--frames);
+    border: 2px solid var(--frames);
+    padding: 2.5rem;
+    box-shadow: 8px 8px var(--frames);
   }
 
   .frame.error {
-    border: 5px solid var(--error);
-    box-shadow: 10px 10px var(--error);
+    border: 2px solid var(--error);
+    box-shadow: 8px 8px var(--error);
   }
 }
 
@@ -104,9 +115,11 @@ h6 {
   user-select: none;
   font-size: 2rem;
   font-style: italic;
+  margin-bottom: 3rem;
 }
 
 label {
+  font-family: "Source Code Pro", monospace;
   user-select: none;
   color: var(--headings);
 }
@@ -114,26 +127,6 @@ label {
 .status {
   color: var(--headings);
   text-align: center;
-}
-
-/* Patreon */
-
-.patrons {
-  text-align: center;
-}
-
-.patrons .feather {
-  margin-left: 10px;
-}
-
-.tier-1 h5,
-.tier-1 a {
-  color: var(--patron-silver);
-}
-
-.tier-6 h5,
-.tier-6 a {
-  color: var(--patron-gold);
 }
 
 /* Forms */
@@ -220,4 +213,8 @@ video {
 /* TODO: This is lame but hopefully this entire stylesheet will get replaced. */
 select {
   color: black;
+}
+
+.label-body {
+  font-family: "Source Sans 3", sans-serif;
 }
