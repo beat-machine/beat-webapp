@@ -32,7 +32,7 @@
     "elm": "0.19.1-5",
     "elm-webpack-loader": "^8.0.0",
     "file-loader": "^5.1.0",
-    "pnpm": "^7.14.2",
+    "pnpm": "^7.33.4",
     "prettier": "^2.7.1",
     "prettier-plugin-elm": "^0.8.0",
     "style-loader": "^3.3.1",
